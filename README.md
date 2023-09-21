@@ -1,0 +1,7 @@
+# Buddy-English_Flashcards
+The app contains  flashcards with English words or phrases that users can learn from. When users click on a card, it flips, revealing the Russian translation. This helps users understand the meaning of the word or phrase. Cards that users have memorized and wish to
+review later can be swiped to the right.
+This helps users filter words they need to revisit. The app allows users to track their progress in learning words and phrases. They can see how many 
+cards they've learned, how many are remaining, and their overall progress.
+
+(in the future it is planned) Categorization of Cards: Cards can be organized into different categories or topics so that users can learn specific words or phrases relevant to their interests or needs.
