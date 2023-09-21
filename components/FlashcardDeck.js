@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text} from 'react-native';
+import { StyleSheet, View, Text} from 'react-native';
 import Swiper from 'react-native-swiper';
 import Flashcard from './Flashcard';
 
@@ -44,9 +44,9 @@ const FlashcardDeck = () => {
   return (
     <View style={styles.container}>
 <View style={styles.containerText}>
-            <Text style={styles.iconText}>
+            {/* <Text style={styles.iconText}>
           Swipe!
-            </Text>
+            </Text> */}
           </View>
 
 
