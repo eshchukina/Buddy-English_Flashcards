@@ -8,7 +8,8 @@ cards they've learned, how many are remaining, and their overall progress.
 
 
 
-![screenshot 1](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230351.png) ![screenshot 2](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_231334.png)
+![screenshot 1](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230351.png){width=50% height=50%}
+![screenshot 2](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_231334.png)
 
 ![screenshot 3](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230611.png)
 ![screenshot 4](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230630.png)
