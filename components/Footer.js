@@ -3,7 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableHighlight,
+  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Clipboard from "react-native-vector-icons/Entypo";
@@ -37,7 +37,7 @@ const Footer = ({ setSelectedComponent }) => {
   };
   return (
     <View style={styles.container}>
-      <TouchableHighlight
+      <Pressable
         underlayColor="#c4661f"
         style={styles.button}
         onPressIn={handlePressIn1}
@@ -49,9 +49,9 @@ const Footer = ({ setSelectedComponent }) => {
         >
           <Clipboard name="clipboard" size={44} />
         </Text>
-      </TouchableHighlight>
+      </Pressable>
 
-      <TouchableHighlight
+      <Pressable
         underlayColor="#c4661f"
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -61,7 +61,7 @@ const Footer = ({ setSelectedComponent }) => {
         <Text style={[styles.buttonText, isPressed && styles.buttonActiveText]}>
           <Icon name="user" size={40} />
         </Text>
-      </TouchableHighlight>
+      </Pressable>
     </View>
   );
 };

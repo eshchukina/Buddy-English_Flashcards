@@ -8,7 +8,9 @@ const Header = () => {
       <View style={styles.leftContent}>
         <Image
           source={require("./logobe_1.png")}
-          style={styles.logoImage}
+       
+          style={{ width: 100, height: 200, resizeMode: "contain",   alignItems: "center" }}
+
         />
       </View>
       <View style={styles.rightContent}>
@@ -19,20 +21,20 @@ const Header = () => {
 };
 
 const styles = StyleSheet.create({
-  logoImage: {
-    width: 100, 
-    height: 100, 
-    resizeMode: "contain",
-  },
 
   container: {
     backgroundColor: "#fefae0",
-    padding: 10,
+    paddingTop: 0,
+    paddingBottom:10,
+    paddingLeft:10,
+    paddingRight:10,
     flexDirection: "row", 
     alignItems: "center",
     justifyContent: "space-between",
+
   },
   leftContent: {
+  
     
   },
   rightContent: {

@@ -7,7 +7,6 @@ export default function DownloadData() {
   const flashcards = [
     { id: 1, word: "Apple", translation: "Яблоко" },
     { id: 2, word: "Banana", translation: "Банан" },
-
   ];
 
   const [currentFlashcardIndex, setCurrentFlashcardIndex] = useState(0);
@@ -26,6 +25,9 @@ export default function DownloadData() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+
+      <Text style={styles.text}>sdgfvsd</Text>
+
       <View style={styles.mainBox}>
         {currentFlashcardIndex < flashcards.length ? (
           <Flashcard
@@ -33,6 +35,7 @@ export default function DownloadData() {
             translation={flashcards[currentFlashcardIndex].translation}
             onSwipeRight={handleSwipeRight}
             onSwipeLeft={handleSwipeLeft}
+            hasNextCard={currentFlashcardIndex < flashcards.length - 1}
           />
         ) : (
           <Text>No more flashcards to show</Text>
@@ -57,5 +60,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "#5f6f52",
     marginBottom: 20,
+    fontFamily: "vidaloka",
   },
 });

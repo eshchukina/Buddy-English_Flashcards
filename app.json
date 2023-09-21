@@ -7,9 +7,9 @@
     "icon": "./assets/logobe_1.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": " ",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#fefae0"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,11 +20,11 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/logobe_1.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#fefae0"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logobe_1.png"
     }
   }
 }

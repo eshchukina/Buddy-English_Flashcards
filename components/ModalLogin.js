@@ -4,23 +4,28 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   TouchableWithoutFeedback,
-  TouchableHighlight,
+
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import ModalSingIn from "./ModalSingIn";
 
-export default function ModalLogin({ visible, onClose, isDarkMode }) {
+
+export default function ModalLogin({
+  visible,
+  onClose,
+  isDarkMode,
+  closeModal,
+}) {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [isPressed1, setIsPressed1] = useState(false);
-  const [isPressed2, setIsPressed2] = useState(false);
-  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+  // const [isPressed2, setIsPressed2] = useState(false);
+  // const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -38,30 +43,32 @@ export default function ModalLogin({ visible, onClose, isDarkMode }) {
     setIsPressed1(false);
   };
 
-  const handlePressIn2 = () => {
-    setIsPressed2(true);
-  };
+  // const handlePressIn2 = () => {
+  //   setIsPressed2(true);
+  // };
 
-  const handlePressOut2 = () => {
-    setIsPressed2(false);
-  };
+  // const handlePressOut2 = () => {
+  //   setIsPressed2(false);
+  // };
 
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const handleCloseModal = () => {
-    setIsPressed2(false);
-    onClose();
+    // setIsPressed2(false);
+
+    closeModal();
   };
 
-  const openLoginModal = () => {
-    setIsLoginModalVisible(true);
-  };
+  // const openLoginModal = () => {
+  //   setIsLoginModalVisible(true);
+  // };
 
-  const closeLoginModal = () => {
-    setIsLoginModalVisible(false);
-  };
+  // const closeLoginModal = () => {
+  //   setIsLoginModalVisible(false);
+  //   closeModal();
+  // };
 
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
@@ -113,7 +120,7 @@ export default function ModalLogin({ visible, onClose, isDarkMode }) {
               value={password}
               onChangeText={(text) => setPassword(text)}
             />
-            <TouchableOpacity
+            <Pressable
               style={styles.lockPassword}
               onPress={handlePasswordVisibility}
             >
@@ -124,10 +131,10 @@ export default function ModalLogin({ visible, onClose, isDarkMode }) {
                   <Icon name="eye-slash" size={20} color="#6c526f" />
                 )}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
-          <TouchableHighlight
+          <Pressable
             style={[
               styles.button,
               isPressed && styles.buttonActive,
@@ -147,11 +154,11 @@ export default function ModalLogin({ visible, onClose, isDarkMode }) {
                 },
               ]}
             >
-              Register
+              register
             </Text>
-          </TouchableHighlight>
+          </Pressable>
 
-          <TouchableHighlight
+          <Pressable
             style={[
               styles.buttonClose,
               isPressed1 && styles.buttonActive,
@@ -174,54 +181,9 @@ export default function ModalLogin({ visible, onClose, isDarkMode }) {
                 },
               ]}
             >
-              Close
+              close
             </Text>
-          </TouchableHighlight>
-
-          <Text
-            style={[
-              styles.modalText,
-              styles.titleText,
-              isDarkMode ? styles.dark : styles.light,
-            ]}
-          >
-            Enter login
-          </Text>
-          <TouchableHighlight
-            onPressIn={handlePressIn2}
-            onPressOut={() => {
-              openLoginModal();
-              handlePressOut2();
-            }}
-            underlayColor="#c4661f"
-            style={[
-              styles.button,
-              isPressed2 && styles.buttonActive,
-              isDarkMode ? styles.darkButton : styles.lightButton,
-            ]}
-          >
-            <Text
-              style={[
-                {
-                  color: "#a9b388",
-                },
-                isPressed2 && {
-                  color: "#f9ebc7",
-                },
-              ]}
-            >
-              Login
-            </Text>
-          </TouchableHighlight>
-
-          {isLoginModalVisible && (
-            <ModalSingIn
-              visible={isLoginModalVisible}
-              onClose={closeLoginModal}
-              isDarkMode={isDarkMode}
-              handleCloseModal={handleCloseModal}
-            />
-          )}
+          </Pressable>
         </View>
       </View>
     </Modal>
@@ -239,7 +201,7 @@ const styles = StyleSheet.create({
   modalContent: {
     padding: 20,
     borderRadius: 20,
-    width: "auto",
+    width: 250,
     textAlign: "center",
     margin: "auto",
     borderWidth: 2,
@@ -293,9 +255,8 @@ const styles = StyleSheet.create({
   },
   lockPassword: {
     padding: 5,
-    position: "absolute",
-    left: 140,
-    top: 3,
+    position: "relative",
+   
   },
   button: {
     borderRadius: 15,

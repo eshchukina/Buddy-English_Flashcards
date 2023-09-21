@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
-  TouchableHighlight,
+  Pressable,
   View,
   Text,
+  TouchableWithoutFeedback, // Import TouchableWithoutFeedback
 } from "react-native";
-import ModalLogin from "./ModalLogin";
 import Icon from "react-native-vector-icons/AntDesign";
+import BurgerMenu from "./BurgerMenu";
+import ModalLogin from "./ModalLogin";
+import ModalSingIn from "./ModalSingIn";
 
 export default function LoginButton() {
   const [isPressed, setIsPressed] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [activeModal, setActiveModal] = useState(null);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -19,29 +24,59 @@ export default function LoginButton() {
   const handlePressOut = () => {
     setIsPressed(false);
   };
-  const openModal = () => {
+
+  const openModal = (modalType) => {
     setModalVisible(true);
+    setActiveModal(modalType);
+    setIsMenuVisible(true);
   };
 
   const closeModal = () => {
     setModalVisible(false);
+    setActiveModal(null);
+    setIsMenuVisible(false);
+  };
+
+  const handleEmptySpacePress = () => {
+    if (modalVisible) {
+      closeModal();
+    }
   };
 
   return (
-    <TouchableHighlight
-      style={[styles.button, isPressed && styles.buttonActive]}
-      underlayColor="#c4661f"
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      onPress={openModal}
-    >
+    <TouchableWithoutFeedback onPress={handleEmptySpacePress}>
       <View>
-        <Text style={[styles.buttonText, isPressed && styles.buttonActiveText]}>
-          <Icon name="login" size={44} />
-        </Text>
-        <ModalLogin visible={modalVisible} onClose={closeModal} />
+        <Pressable
+          style={[styles.button, isPressed && styles.buttonActive]}
+          underlayColor="#c4661f"
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          onPress={openModal}
+        >
+          <View>
+            <Text
+              style={[styles.buttonText, isPressed && styles.buttonActiveText]}
+            >
+              <Icon name="login" size={40} />
+            </Text>
+          </View>
+        </Pressable>
+
+        {modalVisible && activeModal === "login" && (
+          <ModalSingIn closeModal={closeModal} />
+        )}
+        {modalVisible && activeModal === "signIn" && (
+          <ModalLogin closeModal={closeModal} />
+        )}
+        {modalVisible && activeModal === null && (
+          <View>
+            <Text>No Modal Selected</Text>
+          </View>
+        )}
+
+        <BurgerMenu closeModal={openModal} isMenuVisible={isMenuVisible} />
       </View>
-    </TouchableHighlight>
+    </TouchableWithoutFeedback>
   );
 }
 

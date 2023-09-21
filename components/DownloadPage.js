@@ -4,17 +4,18 @@ import {
   View,
   Text,
   FlatList,
-  TouchableOpacity,
-  TouchableHighlight,
+  Pressable,
+
 } from "react-native";
 import { Image } from "react-native";
 
-export default function DownloadPage({
-  setSelectedComponent
-}) {
+import Swiper from 'react-native-swiper';
+
+
+export default function DownloadPage({ setSelectedComponent }) {
   const [currentPage, setCurrentPage] = useState(0);
   const flatListRef = useRef(null);
-  const [isPressed, setIsPressed] = useState(false); 
+  const [isPressed, setIsPressed] = useState(false);
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -31,19 +32,19 @@ export default function DownloadPage({
     },
     {
       id: "2",
-      text: "Elevate your English language proficiency with our extensive collection of 3000 common words.",
+      text: "Elevate your English language proficiency with our extensive collection of 3000 common words",
     },
     {
       id: "3",
-      text: "Enhance your English language skills by swiping right for words you've mastered and swiping left for those you're still learning.",
+      text: "Enhance your English language skills by swiping right for words you've mastered and swiping left for those you're still learning",
     },
     {
       id: "4",
-      text: "With a collection of 3000 common words, gradually eliminate the words you haven't mastered yet.",
+      text: "With a collection of 3000 common words, gradually eliminate the words you haven't mastered yet",
     },
     {
       id: "5",
-      text: "Start your journey towards English fluency today while effortlessly tracking your progress in mastering each word.",
+      text: "Start your journey towards English fluency today while effortlessly tracking your progress in mastering each word",
     },
   ];
   const handleButtonClick = () => {
@@ -53,7 +54,7 @@ export default function DownloadPage({
   const currentDataItem = data[currentPage];
 
   const renderPageIndicator = (index) => (
-    <TouchableOpacity
+    <Pressable
       key={index}
       style={[
         styles.pageIndicator,
@@ -68,16 +69,18 @@ export default function DownloadPage({
 
   return (
     <View style={styles.container}>
-        <View style={styles.mainBox}>
-          <View style={styles.mainBox1}>
-            <Image
-              source={require("./logobe_1.png")}
-              style={styles.logoImage}
-            />
-          </View>
+      <View style={styles.mainBox}>
+        <View style={styles.mainBox1}>
+        <Image
+  source={require("./logobe_1.png")}
+  style={{ width: 100, height: 100, resizeMode: "contain", position: "absolute", top: 90 }}
+/>
         </View>
-  
+      </View>
+
       <View style={styles.mainTextBox}>
+
+        
         <View style={styles.flatListContainer}>
           <FlatList
             ref={flatListRef}
@@ -94,14 +97,31 @@ export default function DownloadPage({
             }}
           />
 
-          <Text style={styles.text}>{currentDataItem.text}</Text>
+         {/* <Text style={styles.text}>{currentDataItem.text}</Text> 
 
-          <View style={styles.pageIndicators}>
+         <View style={styles.pageIndicators}>
             {data.map((_, index) => renderPageIndicator(index))}
+          </View>  */}
+
+
+          
+          <Swiper
+        loop={false}
+        showsPagination
+        dotStyle={styles.dotStyle} 
+    
+  activeDotStyle={styles.activeDotStyle} 
+        onIndexChanged={(index) => setCurrentPage(index)}
+      >
+        {data.map((item) => (
+          <View key={item.id} style={styles.pageIndicators}>
+             <Text style={styles.text}>{currentDataItem.text}</Text> 
           </View>
+        ))}
+      </Swiper>
 
           {currentPage === data.length - 1 && (
-            <TouchableHighlight
+            <Pressable
               style={styles.button}
               underlayColor="#c4661f"
               onPressIn={handlePressIn}
@@ -116,7 +136,7 @@ export default function DownloadPage({
               >
                 let's start
               </Text>
-            </TouchableHighlight>
+            </Pressable>
           )}
         </View>
       </View>
@@ -125,13 +145,7 @@ export default function DownloadPage({
 }
 
 const styles = StyleSheet.create({
-  logoImage: {
-    width: 100, 
-    height: 100, 
-    resizeMode: "contain", 
-    position: "absolute",
-    top: 90,
-  },
+
   container: {
     flexGrow: 1,
     fontFamily: "vidaloka",
@@ -144,7 +158,7 @@ const styles = StyleSheet.create({
     margin: 10,
     top: "20%",
     backgroundColor: "#a9b388",
-    alignSelf: "center", 
+    alignSelf: "center",
     borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
@@ -152,22 +166,38 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
   },
+  dotStyle: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#b99470", // Цвет обычных точек
+    marginHorizontal: 5,
+  },
+  activeDotStyle: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#a9b388", // Цвет активных точек
+    marginHorizontal: 5,
+  },
+
+ 
 
   buttonText: {
     fontFamily: "vidaloka",
-    fontSize: 16, 
+    fontSize: 16,
     color: "#5f6f52",
   },
   buttonTextActive: {
-    color: "#783d19", 
+    color: "#783d19",
   },
   flatListContainer: {
-    height: 300, 
+    height: 300,
   },
 
   text: {
     fontFamily: "vidaloka",
-    fontSize: 20,
+    fontSize: 18,
     textAlign: "center",
     color: "#5f6f52",
   },
@@ -221,7 +251,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   flatListContainer: {
-    height: 200, 
+    height: 300,
   },
   page: {
     width: "100%",
@@ -229,8 +259,9 @@ const styles = StyleSheet.create({
   pageIndicators: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 10,
-  },
+
+
+},
   pageIndicator: {
     width: 10,
     height: 10,
@@ -239,6 +270,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   activePageIndicator: {
-    backgroundColor: "#b99470", 
+    backgroundColor: "#b99470",
   },
 });

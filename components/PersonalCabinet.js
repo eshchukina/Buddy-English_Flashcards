@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import Info from "react-native-vector-icons/FontAwesome5";
 const PersonalCabinet = ({ setSelectedComponent }) => {
 
   const openInfo = () => {
-    setSelectedComponent("download");
+    setSelectedComponent("info");
   };
 
   const handlePressIn = () => {
@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     fontFamily: "vidaloka",
     marginBottom: 20,
     marginLeft: 20,
+    fontSize:18,
   },
   userPhotoContainer: {
     width: 150,
