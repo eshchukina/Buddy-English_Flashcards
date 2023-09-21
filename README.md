@@ -8,10 +8,10 @@ cards they've learned, how many are remaining, and their overall progress.
 
 
 
-![screenshot 1](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230351.png){width=20% height=20%}
-![screenshot 2](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_231334.png){width=20% height=20%}
-![screenshot 3](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230611.png){width=20% height=20%}
-![screenshot 4](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230630.png){width=20% height=20%}
-![screenshot 5](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230644.png){width=20% height=20%}
-![screenshot 6](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_231347.png){width=20% height=20%}
-![screenshot 7](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_231407.png){width=20% height=20%}
+![screenshot 1](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230351.png)
+![screenshot 2](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_231334.png)
+![screenshot 3](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230611.png)
+![screenshot 4](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230630.png)
+![screenshot 5](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230644.png)
+![screenshot 6](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_231347.png)
+![screenshot 7](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_231407.png)
