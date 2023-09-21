@@ -20,7 +20,7 @@ const fonts = () =>
   });
 
 export default function App() {
-  const [selectedComponent, setSelectedComponent] = useState("dashboard");
+  const [selectedComponent, setSelectedComponent] = useState("download");
   const [font, setFont] = useState(false);
 
   const toggleComponent = (component) => {
