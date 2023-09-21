@@ -5,3 +5,6 @@ This helps users filter words they need to revisit. The app allows users to trac
 cards they've learned, how many are remaining, and their overall progress.
 
 (in the future it is planned) Categorization of Cards: Cards can be organized into different categories or topics so that users can learn specific words or phrases relevant to their interests or needs.
+
+
+https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20230921_230351.png
