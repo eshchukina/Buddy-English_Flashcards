@@ -1,4 +1,5 @@
-# Buddy-English_Flashcards
+Buddy-English_Flashcards react native
+ 
 The app contains  flashcards with English words or phrases that users can learn from. When users click on a card, it flips, revealing the Russian translation. This helps users understand the meaning of the word or phrase. Cards that users have memorized and wish to
 review later can be swiped to the right.
 This helps users filter words they need to revisit. The app allows users to track their progress in learning words and phrases. They can see how many 
