@@ -1,73 +1,51 @@
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Text, Image } from "react-native";
+import Left from "react-native-vector-icons/AntDesign";
+import Right from "react-native-vector-icons/AntDesign";
+import SwipeCards from "./SwipeCards.js";
 
+const FlashcardDeck = ({ updateSwipedRightCount }) => {
+  const [isVisible, setIsVisible] = useState(true);
 
-import React from 'react';
-import { StyleSheet, View, Text} from 'react-native';
-import Swiper from 'react-native-swiper';
-import Flashcard from './Flashcard';
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsVisible((prev) => !prev);
+    }, 500);
 
-const FlashcardDeck = () => {
-  const flashcards = [
-    { id: 1, word: 'Apple', translation: 'Яблоко' },
-    { id: 2, word: 'Banana', translation: 'Банан' },
-    { id: 1, word: 'Cat', translation: 'Кот' },
-    { id: 2, word: 'Dog', translation: 'Собака' },
-    { id: 1, word: 'Bear', translation: 'Медведь' },
-    { id: 2, word: 'Milk', translation: 'Молоко' },
-    { id: 1, word: 'Home', translation: 'Дом' },
-    { id: 2, word: 'Friend', translation: 'Друзья' },
-    { id: 1, word: 'Apple', translation: 'Яблоко' },
-    { id: 2, word: 'Banana', translation: 'Банан' },
-    { id: 1, word: 'Cat', translation: 'Кот' },
-    { id: 2, word: 'Dog', translation: 'Собака' },
-    { id: 1, word: 'Bear', translation: 'Медведь' },
-    { id: 2, word: 'Milk', translation: 'Молоко' },
-    { id: 1, word: 'Home', translation: 'Дом' },
-    { id: 2, word: 'Friend', translation: 'Друзья' },
-    { id: 1, word: 'Apple', translation: 'Яблоко' },
-    { id: 2, word: 'Banana', translation: 'Банан' },
-    { id: 1, word: 'Cat', translation: 'Кот' },
-    { id: 2, word: 'Dog', translation: 'Собака' },
-    { id: 1, word: 'Bear', translation: 'Медведь' },
-    { id: 2, word: 'Milk', translation: 'Молоко' },
-    { id: 1, word: 'Home', translation: 'Дом' },
-    { id: 2, word: 'Friend', translation: 'Друзья' },
-    { id: 1, word: 'Apple', translation: 'Яблоко' },
-    { id: 2, word: 'Banana', translation: 'Банан' },
-    { id: 1, word: 'Cat', translation: 'Кот' },
-    { id: 2, word: 'Dog', translation: 'Собака' },
-    { id: 1, word: 'Bear', translation: 'Медведь' },
-    { id: 2, word: 'Milk', translation: 'Молоко' },
-    { id: 1, word: 'Home', translation: 'Дом' },
-    { id: 2, word: 'Friend', translation: 'Друзья' },
-  ];
+    const hideTimeout = setTimeout(() => {
+      clearInterval(interval);
+      setIsVisible(false);
+    }, 3500);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(hideTimeout);
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
-<View style={styles.containerText}>
-            {/* <Text style={styles.iconText}>
-          Swipe!
-            </Text> */}
-          </View>
+      <Text style={styles.text}>
+        Swipe the card to the left if you don't know the word, and to the right
+        if you know it!
+      </Text>
 
+      {isVisible && (
+        <Text style={styles.textIcon}>
+          <Left name="doubleleft" size={20} color="#6c526f" />
+        </Text>
+      )}
+      {isVisible && (
+        <Text style={styles.textIconTwo}>
+          <Right name="doubleright" size={20} color="#6c526f" />
+        </Text>
+      )}
 
-
-    <Swiper loop={true}
-    showsPagination={false} 
-    dotStyle={styles.dotStyle} 
-
-activeDotStyle={styles.activeDotStyle} 
-    
-    >
-      
-      {flashcards.map((flashcard) => (
-        <Flashcard
-          key={flashcard.id}
-          word={flashcard.word}
-          translation={flashcard.translation}
-        />
-      ))}
-    </Swiper>
-   </View>
+      <SwipeCards
+        updateSwipedRightCount={updateSwipedRightCount}
+        style={{ flex: 1 }}
+      />
+    </View>
   );
 };
 
@@ -75,33 +53,41 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     fontFamily: "vidaloka",
-  
     backgroundColor: "#fefae0",
-    flexDirection: "column", 
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
   },
-  containerText:{
- 
-      flexDirection: "row",
-      justifyContent: "center",
-  
-  position:"relative",
-
-  top:200,
-zIndex:1,
-
-  },
-
-  iconText: {
-  
- 
+  textIcon: {
     fontFamily: "vidaloka",
-    fontSize: 25,
+    fontSize: 22,
     textAlign: "center",
     color: "#6c526f",
+    position: "absolute",
+    paddingRight: 50,
+    top: 200,
+    zIndex: 2,
   },
-
+  textIconTwo: {
+    fontFamily: "vidaloka",
+    fontSize: 22,
+    textAlign: "center",
+    color: "#6c526f",
+    position: "absolute",
+    paddingLeft: 50,
+    top: 200,
+    zIndex: 2,
+  },
+  text: {
+    fontFamily: "vidaloka",
+    fontSize: 20,
+    textAlign: "center",
+    color: "#6c526f",
+    position: "absolute",
+    top: 90,
+    zIndex: 2,
+    margin: 10,
+  },
 });
 
 export default FlashcardDeck;

@@ -7,9 +7,12 @@ import {
   Pressable,
   StyleSheet,
   TouchableWithoutFeedback,
-
+  TouchableHighlight,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
+
+import Close from "react-native-vector-icons/AntDesign";
+import { isEmailValid, isPasswordValid } from "./Validation";
 
 export default function ModalSingIn({
   visible,
@@ -18,15 +21,19 @@ export default function ModalSingIn({
   isDarkMode,
   handleCloseModal,
 }) {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [isPressed1, setIsPressed1] = useState(false);
-  // const [isPressed2, setIsPressed2] = useState(false);
+
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const handlePressIn = () => {
-    setIsPressed(true);
+    setEmailError("");
+
+    setPasswordError("");
   };
 
   const handlePressOut = () => {
@@ -34,7 +41,8 @@ export default function ModalSingIn({
   };
 
   const handlePressIn1 = () => {
-    setIsPressed1(true);
+    setPasswordError("");
+    setEmailError("");
   };
 
   const handlePressOut1 = () => {
@@ -49,6 +57,19 @@ export default function ModalSingIn({
     // setIsPressed2(false);
 
     closeModal();
+  };
+
+  const handleFormSubmit = () => {
+    if (!isEmailValid(email) || !isPasswordValid(password)) {
+      setEmailError(!isEmailValid(email) ? "invalid email" : "");
+      setPasswordError(
+        !isPasswordValid(password)
+          ? "password must be at least 6 characters long"
+          : ""
+      );
+
+      return;
+    }
   };
 
   return (
@@ -74,24 +95,33 @@ export default function ModalSingIn({
             style={[
               styles.input,
               isDarkMode ? styles.darkInput : styles.lightInput,
+              emailError && styles.inputError,
             ]}
-            placeholder="email"
+            placeholder={"email"}
             placeholderTextColor="#b99470"
             value={email}
             onChangeText={(text) => setEmail(text)}
+            onFocus={handlePressIn}
           />
+          {emailError ? (
+            <Text style={styles.errorText}>{emailError}</Text>
+          ) : null}
+
           <View style={styles.passwordInputContainer}>
             <TextInput
               style={[
                 styles.passwordInput,
                 isDarkMode ? styles.darkInput : styles.lightInput,
+                passwordError && styles.inputError,
               ]}
               secureTextEntry={!showPassword}
               placeholder="password"
               placeholderTextColor="#b99470"
               value={password}
               onChangeText={(text) => setPassword(text)}
+              onFocus={handlePressIn}
             />
+
             <Pressable
               style={styles.lockPassword}
               onPress={handlePasswordVisibility}
@@ -105,35 +135,29 @@ export default function ModalSingIn({
               </Text>
             </Pressable>
           </View>
-
-          <Pressable
+          {passwordError ? (
+            <Text style={styles.errorText}>{passwordError}</Text>
+          ) : null}
+          <TouchableHighlight
+            underlayColor="#c4661f"
             style={[
               styles.button,
-              isPressed && styles.buttonActive,
               isDarkMode ? styles.darkButton : styles.lightButton,
+              email && styles.buttonActive,
             ]}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
-            underlayColor="#c4661f"
+            onPress={handleFormSubmit}
           >
-            <Text
-              style={[
-                {
-                  color: "#a9b388",
-                },
-                isPressed && {
-                  color: "#f9ebc7",
-                },
-              ]}
-            >
-              create
-            </Text>
-          </Pressable>
-          <Pressable
+            <Text style={styles.buttonText}>create</Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight
+            underlayColor="#c4661f"
             style={[
               styles.closeButton,
-              styles.button,
-              isPressed1 && styles.buttonActive,
+
+              password && styles.buttonActive,
               isDarkMode ? styles.darkButton : styles.lightButton,
             ]}
             onPressIn={() => {
@@ -142,21 +166,11 @@ export default function ModalSingIn({
               handlePressIn1();
               // handleCloseModal();
             }}
-            underlayColor="#c4661f"
           >
-            <Text
-              style={[
-                {
-                  color: "#a9b388",
-                },
-                isPressed && {
-                  color: "#f9ebc7",
-                },
-              ]}
-            >
-              close
+            <Text style={styles.buttonText}>
+              <Close name="close" size={30} />
             </Text>
-          </Pressable>
+          </TouchableHighlight>
         </View>
       </View>
     </Modal>
@@ -166,19 +180,18 @@ export default function ModalSingIn({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+
     justifyContent: "center",
     alignItems: "center",
   },
 
   modalContent: {
-    padding: 20,
-    paddingTop: 30,
-    paddingBottom: 45,
+    padding: 35,
+    paddingTop: 65,
+    paddingBottom: 55,
     borderRadius: 20,
     width: 250,
     textAlign: "center",
-    color: "#756685",
     margin: "auto",
     borderWidth: 2,
     borderColor: "#5f6f52",
@@ -204,13 +217,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontFamily: "vidaloka",
   },
-
   input: {
     borderColor: "#5f6f52",
     borderWidth: 1,
     borderRadius: 15,
-    padding: 10,
-    marginBottom: 10,
+    padding: 5,
   },
   darkInput: {
     backgroundColor: "#b8bbc4",
@@ -228,25 +239,42 @@ const styles = StyleSheet.create({
     borderColor: "#5f6f52",
     borderWidth: 1,
     borderRadius: 15,
-    padding: 10,
-    marginBottom: 10,
+    padding: 5,
+    marginTop: 15,
   },
   lockPassword: {
     padding: 5,
     position: "relative",
-   
+    top: 7,
   },
   button: {
     borderRadius: 15,
-    padding: 10,
-    marginBottom: 10,
+    padding: 15,
+    alignItems: "center",
+    backgroundColor: "#b99470",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 5, //
+    marginTop: 15,
+  },
+  buttonText: {
+    color: "#783d19",
+  },
+  closeButton: {
+    borderRadius: 50,
+    padding: 12,
+    marginTop: 20,
+    marginLeft: 60,
+    marginRight: 60,
     alignItems: "center",
     backgroundColor: "#5f6f52",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    elevation: 5, // For Android
+    elevation: 5,
   },
   buttonActive: {
     elevation: 6,
@@ -261,7 +289,11 @@ const styles = StyleSheet.create({
     color: "#e0e4dc",
   },
   lightButton: {
-    backgroundColor: "#5f6f52",
+    backgroundColor: "#b99470",
   },
-  buttonText: {},
+  errorText: {
+    fontSize: 10,
+    color: "#c4661f",
+    marginLeft: 5,
+  },
 });

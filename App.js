@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView } from "react-native";
-import * as SplashScreen from "expo-splash-screen"; // Изменили импорт
+import { StyleSheet, SafeAreaView, Button } from "react-native";
+import * as SplashScreen from "expo-splash-screen"; //
 import Footer from "./components/Footer";
 import PersonalCabinet from "./components/PersonalCabinet";
 import Header from "./components/Header";
@@ -12,7 +12,12 @@ import Dashboard from "./components/Dashboard";
 import Info from "./components/Info";
 import * as Font from "expo-font";
 import FlashcardDeck from "./components/FlashcardDeck";
+import Toast from 'react-native-toast-message';
 
+
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const fonts = () =>
   Font.loadAsync({
@@ -22,10 +27,35 @@ const fonts = () =>
 export default function App() {
   const [selectedComponent, setSelectedComponent] = useState("download");
   const [font, setFont] = useState(false);
+  const [swipedRightCount, setSwipedRightCount] = useState(0);
+  const [isPersonalCabinetOpen, setIsPersonalCabinetOpen] = useState(false);
+
+
+  const updateSwipedRightCount = (count) => {
+    setSwipedRightCount(count);
+  };
+
 
   const toggleComponent = (component) => {
     setSelectedComponent(component);
+    showToast(); // Вызываем оповещение при смене компонента
+    console.log('всплывающее сообщение')
   };
+  
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Well done!',
+      text2: `You've made ${swipedRightCount} correct swipes!`,
+      
+      style: {
+        backgroundColor: 'red', // Измените цвет фона
+        borderColor: 'white', // Измените цвет границы
+        borderWidth: 2, // Измените толщину границы
+      },
+    });
+  };
+  
 
   useEffect(() => {
     async function prepare() {
@@ -37,6 +67,14 @@ export default function App() {
 
     prepare();
   }, []);
+
+  useEffect(() => {
+    if (swipedRightCount % 10 === 0 && swipedRightCount > 0) {
+      showToast();
+    }
+  }, [swipedRightCount]);
+
+
 
   if (font) {
     return (
@@ -51,16 +89,21 @@ export default function App() {
             <Header />
             <Dashboard setSelectedComponent={setSelectedComponent} />
             <Footer setSelectedComponent={setSelectedComponent} />
+            
           </>
         ) : selectedComponent === "flashcards" ? (
           <>
-            <FlashcardDeck setSelectedComponent={setSelectedComponent} />
+            <FlashcardDeck setSelectedComponent={setSelectedComponent} updateSwipedRightCount={updateSwipedRightCount} />
             <Footer setSelectedComponent={setSelectedComponent} />
           </>
         ) : selectedComponent === "personalcabinet" ? (
           <>
-            <PersonalCabinet setSelectedComponent={setSelectedComponent} />
-            <Footer setSelectedComponent={setSelectedComponent} />
+            <PersonalCabinet setSelectedComponent={setSelectedComponent}
+            setIsPersonalCabinetOpen={setIsPersonalCabinetOpen} />
+            <Footer
+  setSelectedComponent={setSelectedComponent}
+  isPersonalCabinetOpen={isPersonalCabinetOpen}
+/>
           </>
         ) 
         : selectedComponent === "info" ? (
@@ -73,13 +116,16 @@ export default function App() {
         
         
         : null}
+  {/* <Button title="Показать уведомление" onPress={showToast} /> */}
 
-        <StatusBar style="auto" />
+<StatusBar style="auto" />
+<Toast />
+
       </SafeAreaView>
     );
   } else {
     return null; 
-  }
+  }де
 }
 const styles = StyleSheet.create({
   container: {

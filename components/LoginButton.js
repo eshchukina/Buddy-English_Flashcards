@@ -4,7 +4,7 @@ import {
   Pressable,
   View,
   Text,
-  TouchableWithoutFeedback, // Import TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import BurgerMenu from "./BurgerMenu";
@@ -74,7 +74,11 @@ export default function LoginButton() {
           </View>
         )}
 
-        <BurgerMenu closeModal={openModal} isMenuVisible={isMenuVisible} />
+        <BurgerMenu
+          handleEmptySpacePress={handleEmptySpacePress}
+          closeModal={openModal}
+          isMenuVisible={isMenuVisible}
+        />
       </View>
     </TouchableWithoutFeedback>
   );

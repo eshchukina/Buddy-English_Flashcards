@@ -4,10 +4,10 @@
     "slug": "FlashCards",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logobe_1.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/logobe_1.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#fefae0"
     },
@@ -15,16 +15,23 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.frankkat.FlashCards"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logobe_1.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#fefae0"
-      }
+      },
+      "package": "com.frankkat.FlashCards"
     },
     "web": {
-      "favicon": "./assets/logobe_1.png"
+      "favicon": "./assets/icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9bc70ab5-7e68-47e7-986f-655043b357af"
+      }
     }
   }
 }

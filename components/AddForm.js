@@ -7,33 +7,18 @@ import {
   Pressable,
   StyleSheet,
   TouchableWithoutFeedback,
-  TouchableHighlight,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome5";
+import Icon from "react-native-vector-icons/AntDesign";
+import * as SQLite from "expo-sqlite";
 
-import Close from "react-native-vector-icons/AntDesign";
-import { isEmailValid, isPasswordValid, isNameValid } from "./Validation";
-
-export default function ModalLogin({
-  visible,
-  onClose,
-  isDarkMode,
-  closeModal,
-}) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
   const [isPressed, setIsPressed] = useState(false);
   const [isPressed1, setIsPressed1] = useState(false);
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [nameError, setNameError] = useState("");
+  const [word, setWord] = useState("");
+  const [translation, setTranslation] = useState("");
 
   const handlePressIn = () => {
-    setEmailError("");
-    setNameError("");
-    setPasswordError("");
+    setIsPressed(true);
   };
 
   const handlePressOut = () => {
@@ -48,31 +33,19 @@ export default function ModalLogin({
     setIsPressed1(false);
   };
 
-  const handlePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   const handleCloseModal = () => {
-    // setIsPressed2(false);
-
-    closeModal();
+    onClose();
+    setIsPressed1(false);
   };
 
-  const handleFormSubmit = () => {
-    if (
-      !isNameValid(name) ||
-      !isEmailValid(email) ||
-      !isPasswordValid(password)
-    ) {
-      setEmailError(!isEmailValid(email) ? "invalid email" : "");
-      setPasswordError(
-        !isPasswordValid(password)
-          ? "password must be at least 6 characters long"
-          : ""
-      );
-      setNameError(!isNameValid(name) ? "name must not be empty" : "");
+  const handleCreateWord = () => {
+    if (word.trim() === "" || translation.trim() === "") {
+      console.log("Word and translation cannot be empty.");
       return;
     }
+
+    onAddWord(word, translation);
+    onClose();
   };
 
   return (
@@ -91,98 +64,80 @@ export default function ModalLogin({
               isDarkMode ? styles.dark : styles.light,
             ]}
           >
-            Registration
+            add your word and translation
           </Text>
-
-          <View>
-            <TextInput
-              style={[
-                styles.input,
-                isDarkMode ? styles.darkInput : styles.lightInput,
-              ]}
-              placeholder="name"
-              placeholderTextColor="#b99470"
-              value={name}
-              onChangeText={(text) => setName(text)}
-            />
-            {nameError ? (
-              <Text style={styles.errorText}>{nameError}</Text>
-            ) : null}
-          </View>
 
           <TextInput
             style={[
               styles.input,
               isDarkMode ? styles.darkInput : styles.lightInput,
             ]}
-            placeholder="email"
+            placeholder="word"
             placeholderTextColor="#b99470"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
+            value={word}
+            onChangeText={(text) => setWord(text)}
           />
-          {emailError ? (
-            <Text style={styles.errorText}>{emailError}</Text>
-          ) : null}
-
           <View style={styles.passwordInputContainer}>
             <TextInput
               style={[
                 styles.passwordInput,
                 isDarkMode ? styles.darkInput : styles.lightInput,
               ]}
-              secureTextEntry={!showPassword}
-              placeholder="password"
+              placeholder="translation"
               placeholderTextColor="#b99470"
-              value={password}
-              onChangeText={(text) => setPassword(text)}
+              value={translation}
+              onChangeText={(text) => setTranslation(text)}
             />
-            <Pressable
-              style={styles.lockPassword}
-              onPress={handlePasswordVisibility}
-            >
-              <Text>
-                {showPassword ? (
-                  <Icon name="eye" size={20} color="#6c526f" />
-                ) : (
-                  <Icon name="eye-slash" size={20} color="#6c526f" />
-                )}
-              </Text>
-            </Pressable>
           </View>
-          {passwordError ? (
-            <Text style={styles.errorText}>{passwordError}</Text>
-          ) : null}
 
-          <TouchableHighlight
-            underlayColor="#c4661f"
+          <Pressable
             style={[
               styles.button,
+              isPressed && styles.buttonActive,
               isDarkMode ? styles.darkButton : styles.lightButton,
             ]}
-            onPressIn={handlePressIn}
+            onPress={handleCreateWord}
             onPressOut={handlePressOut}
-            onPress={handleFormSubmit}
-          >
-            <Text style={styles.buttonText}>register</Text>
-          </TouchableHighlight>
-
-          <TouchableHighlight
             underlayColor="#c4661f"
+          >
+            <Text
+              style={[
+                {
+                  color: "#a9b388",
+                },
+                isPressed && {
+                  color: "#f9ebc7",
+                },
+              ]}
+            >
+              create
+            </Text>
+          </Pressable>
+
+          <Pressable
             style={[
               styles.closeButton,
               isPressed1 && styles.buttonActive,
               isDarkMode ? styles.darkButton : styles.lightButton,
             ]}
-            onPressIn={handlePressIn}
-            onPressOut={() => {
-              handlePressOut1();
-              handleCloseModal();
-            }}
+            onPressIn={handlePressIn1}
+            onPressOut={handlePressOut1}
+            onPress={handleCloseModal}
+            underlayColor="#c4661f"
           >
-            <Text style={styles.buttonText}>
-              <Close name="close" size={30} />
+            <Text
+              style={[
+                {
+                  color: "#a9b388",
+                },
+                isPressed1 && {
+                  color: "#f9ebc7",
+                },
+              ]}
+            >
+              <Icon name="close" size={30} />
             </Text>
-          </TouchableHighlight>
+          </Pressable>
         </View>
       </View>
     </Modal>
@@ -192,11 +147,15 @@ export default function ModalLogin({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
   },
+
   modalContent: {
     padding: 35,
+    paddingTop: 55,
+    paddingBottom: 30,
     borderRadius: 20,
     width: 250,
     textAlign: "center",
@@ -211,10 +170,12 @@ const styles = StyleSheet.create({
   },
   dark: {
     backgroundColor: "#333333",
+    color: "#FFFFFF",
   },
   modalText: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#756685",
     alignItems: "center",
   },
   titleText: {
@@ -228,7 +189,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 15,
     padding: 5,
-    marginTop: 15,
+    marginBottom: 15,
   },
   darkInput: {
     backgroundColor: "#b8bbc4",
@@ -247,28 +208,29 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 15,
     padding: 5,
-    marginTop: 15,
+    marginBottom: 15,
   },
   lockPassword: {
     padding: 5,
     position: "relative",
-    top: 7,
   },
   button: {
     borderRadius: 15,
     padding: 15,
-    marginTop: 15,
+    marginBottom: 10,
     alignItems: "center",
-    backgroundColor: "#b99470",
+    backgroundColor: "#5f6f52",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    elevation: 5,
+    elevation: 5, //
+    marginTop: 10,
   },
   closeButton: {
     borderRadius: 50,
-    padding: 12,
+    padding: 10,
+
     marginTop: 10,
     marginLeft: 60,
     marginRight: 60,
@@ -293,17 +255,7 @@ const styles = StyleSheet.create({
     color: "#e0e4dc",
   },
   lightButton: {
-    backgroundColor: "#b99470",
+    backgroundColor: "#5f6f52",
   },
-  buttonText: {
-    textAlign: "center",
-  },
-  errorText: {
-    fontSize: 10,
-    color: "#c4661f",
-    marginLeft: 5,
-  },
-  buttonText: {
-    color: "#783d19",
-  },
+  buttonText: {},
 });

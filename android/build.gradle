@@ -1,0 +1,22 @@
+android {
+    signingConfigs {
+        release {
+            storeFile file('./my-release-key.keystore') // Путь к вашему keystore-файлу
+            storePassword '400600una' // Пароль к keystore
+             keyAlias 'my-key-alias' // Псевдоним ключа
+            keyPassword '400600una' // Пароль к ключу
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+         
+        }
+    }
+    dependencies {
+    implementation files('./sqlite-android-3430100.aar')
+    implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
+
+  
+}
+}

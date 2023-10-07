@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-} from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Clipboard from "react-native-vector-icons/Entypo";
+import Cards from "react-native-vector-icons/MaterialCommunityIcons";
 
-const Footer = ({ setSelectedComponent }) => {
+const Footer = ({ setSelectedComponent, isPersonalCabinetOpen }) => {
   const [isPressed, setIsPressed] = useState(false);
   const [isPressed1, setIsPressed1] = useState(false);
 
@@ -35,6 +31,11 @@ const Footer = ({ setSelectedComponent }) => {
   const handleButton2Press = () => {
     setSelectedComponent("personalcabinet");
   };
+
+  const handleButton3Press = () => {
+    setSelectedComponent("flashcards");
+  };
+
   return (
     <View style={styles.container}>
       <Pressable
@@ -62,6 +63,20 @@ const Footer = ({ setSelectedComponent }) => {
           <Icon name="user" size={40} />
         </Text>
       </Pressable>
+
+      {isPersonalCabinetOpen && (
+        <Pressable
+          underlayColor="#c4661f"
+          style={styles.button2}
+          // onPressIn={handlePressIn}
+          // onPressOut={handlePressOut}
+          onPress={handleButton3Press}
+        >
+          <Text style={styles.buttonText}>
+            <Cards name="cards" size={40} />
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
 };

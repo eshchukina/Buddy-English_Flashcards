@@ -1,10 +1,6 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  ScrollView,
-  Pressable
-} from "react-native";
+import { StyleSheet, Text, ScrollView, Pressable, Image } from "react-native";
+
 import RadialProgress from "./RadialProgress";
 import Cards from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -24,31 +20,38 @@ export default function DownloadPage({ setSelectedComponent }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.text}>Hello, user! Your progress: </Text>
+      <RadialProgress value={10} />
 
-        <Text style={styles.text}>Hello, Pipka! Your progress: </Text>
-        <RadialProgress value={20} />
-
-        <Pressable
-          underlayColor="#c4661f"
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-          style={styles.button}
-          onPress={openFlash}
-        >
+      <Pressable
+        underlayColor="#c4661f"
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        style={styles.button}
+        onPress={openFlash}
+      >
         <>
-            <Text
-              style={[styles.buttonText, isPressed && styles.buttonActiveText]}
-            >
-              open cards
-            </Text>
-            <Text
-              style={[styles.buttonText, isPressed && styles.buttonActiveText]}
-            >
-              <Cards name="cards" size={40} />
-            </Text>
-         </>
-        </Pressable>
- 
+          <Text
+            style={[styles.buttonText, isPressed && styles.buttonActiveText]}
+          >
+            open cards
+          </Text>
+          <Text
+            style={[styles.buttonText, isPressed && styles.buttonActiveText]}
+          >
+            <Cards name="cards" size={40} />
+          </Text>
+        </>
+      </Pressable>
+      <Image
+        source={require("../assets/img.png")}
+        style={{
+          width: 500,
+          height: 200,
+          resizeMode: "contain",
+          alignItems: "center",
+        }}
+      />
     </ScrollView>
   );
 }
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
     fontFamily: "vidaloka",
     fontSize: 18,
     backgroundColor: "#fefae0",
-    flexDirection: "column", 
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -70,11 +73,8 @@ const styles = StyleSheet.create({
     color: "#5f6f52",
     marginBottom: 20,
   },
-
-
   button: {
-
-    alignItems:"center",
+    alignItems: "center",
     backgroundColor: "#c4661f",
     borderRadius: 15,
     paddingTop: 10,
@@ -82,9 +82,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingLeft: 10,
     marginTop: 50,
-
-    width:150,
-   
+    width: 150,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
