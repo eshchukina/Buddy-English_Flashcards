@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { StyleSheet, Text, View, Animated, Pressable } from "react-native";
 
+
 const Card = ({ word, translation }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const frontOpacity = useRef(new Animated.Value(0)).current;

@@ -27,10 +27,9 @@ const FlashcardDeck = ({ updateSwipedRightCount }) => {
     <View style={styles.container}>
       <Text style={styles.text}>
         Swipe the card to the left if you don't know the word, and to the right
-        if you know it!
+        if you know it! 
       </Text>
-
-      {isVisible && (
+      {/* {isVisible && (
         <Text style={styles.textIcon}>
           <Left name="doubleleft" size={20} color="#6c526f" />
         </Text>
@@ -39,7 +38,7 @@ const FlashcardDeck = ({ updateSwipedRightCount }) => {
         <Text style={styles.textIconTwo}>
           <Right name="doubleright" size={20} color="#6c526f" />
         </Text>
-      )}
+      )} */}
 
       <SwipeCards
         updateSwipedRightCount={updateSwipedRightCount}
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
     color: "#6c526f",
     position: "absolute",
     paddingRight: 50,
-    top: 200,
+    top: 240,
     zIndex: 2,
   },
   textIconTwo: {
@@ -75,7 +74,7 @@ const styles = StyleSheet.create({
     color: "#6c526f",
     position: "absolute",
     paddingLeft: 50,
-    top: 200,
+    top: 240,
     zIndex: 2,
   },
   text: {
@@ -88,6 +87,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     margin: 10,
   },
+
 });
 
 export default FlashcardDeck;

@@ -1,11 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef , useEffect} from "react";
 import {
   StyleSheet,
   View,
   Text,
   FlatList,
   Pressable,
-  Animated,
+ Animated,
   Image,
 } from "react-native";
 
@@ -16,6 +16,9 @@ export default function DownloadPage({ setSelectedComponent }) {
   const [currentPage, setCurrentPage] = useState(0);
   const flatListRef = useRef(null);
   const [isPressed, setIsPressed] = useState(false);
+
+
+
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -53,29 +56,8 @@ export default function DownloadPage({ setSelectedComponent }) {
 
   const currentDataItem = data[currentPage];
 
-  const renderPageIndicator = (index) => (
-    <Pressable
-      key={index}
-      style={[
-        styles.pageIndicator,
-        currentPage === index && styles.activePageIndicator,
-      ]}
-      onPress={() => {
-        flatListRef.current.scrollToIndex({ animated: true, index });
-        setCurrentPage(index);
-      }}
-    />
-  );
 
-  const scrollToLastPage = () => {
-    setCurrentPage(data.length - 1);
-
-    flatListRef.current.scrollToIndex({
-      animated: true,
-      index: data.length - 1,
-    });
-  };
-
+ 
   const zoomOut = {
     0: {
       opacity: 0,
@@ -129,53 +111,54 @@ export default function DownloadPage({ setSelectedComponent }) {
 
       <View style={styles.mainTextBox}>
         <View style={styles.flatListContainer}>
-          <FlatList
-            ref={flatListRef}
-            data={data}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            onMomentumScrollEnd={(event) => {
-              const contentOffset = event.nativeEvent.contentOffset.x;
-              const pageIndex = Math.round(
-                contentOffset / event.nativeEvent.layoutMeasurement.width
-              );
-              setCurrentPage(pageIndex);
-            }}
-          />
-          <Swiper
-            animation={zoomOut}
-            loop={false}
-            showsPagination
-            dotStyle={styles.dotStyle}
-            activeDotStyle={styles.activeDotStyle}
-            onIndexChanged={(index) => setCurrentPage(index)}
-          >
-            {data.map((item, index) => (
-              <View key={item.id} style={styles.pageIndicators}>
-                <Animatable.Text animation={zoomOut} style={styles.text}>
-                  {currentDataItem.text}
-                </Animatable.Text>
-              </View>
-            ))}
-          </Swiper>
+        <FlatList
+  ref={flatListRef}
+  data={data}
+  horizontal
+  pagingEnabled
+  showsHorizontalScrollIndicator={false}
+  onScroll={(event) => {
+    const contentOffset = event.nativeEvent.contentOffset.x;
+    const pageIndex = Math.round(
+      contentOffset / event.nativeEvent.layoutMeasurement.width
+    );
+    setCurrentPage(pageIndex);
+  }}
+/>
 
+<Swiper
+  loop={false}
+  showsPagination
+  dotStyle={styles.dotStyle}
+  activeDotStyle={styles.activeDotStyle}
+  onIndexChanged={(index) => setCurrentPage(index)}
+>
+  {data.map((item, index) => (
+    <View key={item.id} style={styles.pageIndicators}>
+      <Text style={styles.text}>
+        {index === currentPage ? item.text : ""}
+      </Text>
+    </View>
+  ))}
+</Swiper>
           {currentPage === data.length - 1 && (
             <Pressable
+            
               style={styles.button}
               underlayColor="#c4661f"
               onPressIn={handlePressIn}
               onPressOut={handlePressOut}
               onPress={handleButtonClick}
             >
-              <Text
+               <Animatable.Text 
+                animation={zoomOut}
                 style={[
                   styles.buttonText,
                   isPressed ? styles.buttonTextActive : null,
                 ]}
               >
                 let's start
-              </Text>
+                </Animatable.Text>
             </Pressable>
           )}
 
@@ -187,14 +170,16 @@ export default function DownloadPage({ setSelectedComponent }) {
               onPressOut={handlePressOut}
               onPress={handleButtonClick}
             >
-              <Text
+              <Animatable.Text
+              animation={zoomOut}
                 style={[
                   styles.buttonText,
                   isPressed ? styles.buttonTextActive : null,
                 ]}
               >
                 skip
-              </Text>
+                </Animatable.Text>
+
             </Pressable>
           ) : null}
         </View>

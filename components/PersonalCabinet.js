@@ -7,6 +7,8 @@ import {
   Linking,
   Pressable,
   Share as ShareModule,
+  Image, // Add this line to import the Image component
+
 } from "react-native";
 
 import * as ImagePicker from "expo-image-picker";

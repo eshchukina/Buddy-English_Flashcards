@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, Image } from "react-native";
+import { View, StyleSheet, Text,  Animated,  Image } from "react-native";
+import * as Animatable from 'react-native-animatable';
 
-const HorizontalProgress = ({ value }) => {
+const RadialProgress = ({ value }) => {
   const [percentage, setPercentage] = useState(0);
 
   useEffect(() => {
@@ -9,10 +10,28 @@ const HorizontalProgress = ({ value }) => {
   }, [value]);
 
   const fgColor = "#6c526f";
+  const zoomOut = {
+    0: {
+      opacity: 0,
+      scale: 0.5,
+      translateX: 0,
+    },
+    0.5: {
+      opacity: 0.7,
+      scale: 0.7,
+      translateX: 0,
+    },
+    1: {
+      opacity: 1,
+      scale: 1,
+      translateX: 0,
+    },
+  };
 
 
   return (
-    <View style={styles.container}>
+    <Animatable.View animation={zoomOut}
+    style={styles.container}>
       {percentage === 100 ? (
         <Image
           source={require("../assets/win.png")}
@@ -33,7 +52,7 @@ const HorizontalProgress = ({ value }) => {
         </View>
       )}
       <Text style={styles.percentageText}>{percentage}%</Text>
-    </View>
+      </Animatable.View>
   );
 };
 
@@ -60,4 +79,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HorizontalProgress;
+export default RadialProgress;
