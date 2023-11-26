@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image, Text, Pressable, Modal } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
@@ -37,9 +38,10 @@ const fetchDataFromAPI = async () => {
     throw error;
   }
 };
+
 db.transaction((tx) => {
   tx.executeSql(
-    "CREATE TABLE IF NOT EXISTS words (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, translation TEXT);",
+    "CREATE TABLE IF NOT EXISTS words (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, translation TEXT, tag TEXT, count INTEGER);",
     [],
     (tx, result) => {
       console.log("Table created successfully.");
@@ -50,6 +52,29 @@ db.transaction((tx) => {
   );
 });
 
+// db.transaction((tx) => {
+//   tx.executeSql(
+//     'ALTER TABLE words ADD COLUMN tag TEXT;',
+//     [],
+//     (tx, result) => {
+//       console.log('Column "tag" added successfully.');
+//     },
+//     (error) => {
+//       console.log('Error adding column "tag":', error);
+//     }
+//   );
+
+//   tx.executeSql(
+//     'ALTER TABLE words ADD COLUMN count INTEGER;',
+//     [],
+//     (tx, result) => {
+//       console.log('Column "count" added successfully.');
+//     },
+//     (error) => {
+//       console.log('Error adding column "count":', error);
+//     }
+//   );
+// });
  
 
   useEffect(() => {
@@ -81,43 +106,51 @@ db.transaction((tx) => {
             apiData.forEach(({ word, translation }) => {
               db.transaction((tx) => {
                 tx.executeSql(
-                  "INSERT INTO words (word, translation) VALUES (?, ?);",
-                  [word, translation],
+                  "INSERT INTO words (word, translation, tag, count) VALUES (?, ?, ?, ?);",
+                  [word, translation, "", 0],  // Initialize tag as an empty string and count as 0
                   (tx, result) => {
-                    console.log("Данные успешно вставлены:", word, translation);
+                    console.log("Data inserted successfully:", word, translation);
                   },
                   (error) => {
-                    console.log("Ошибка при вставке данных: ", error);
+                    console.log("Error inserting data: ", error);
                   }
                 );
               });
             });
+            
 
             setCards(cardsToDisplay);
             
           } else {
             setDataSource("SQLite");
 
-         db.transaction((tx) => {
-      tx.executeSql("SELECT * FROM words ORDER BY RANDOM();", [], (tx, result) => {
-        const len = result.rows.length;
-        const data = [];
-        for (let i = 0; i < len; i++) {
-          const row = result.rows.item(i);
-          data.push({
-            id: row.id,
-            word: row.word,
-            translation: row.translation,
-          });
-        }
-        const shuffledData = data.sort(() => Math.random() - 0.5);
-
-        console.log("Data fetched from SQLite:", shuffledData);
-
-        setCards(shuffledData);
-        setLoading(false);
-              });
+            db.transaction((tx) => {
+              tx.executeSql(
+                "SELECT * FROM words ORDER BY RANDOM();",
+                [],
+                (tx, result) => {
+                  const len = result.rows.length;
+                  const data = [];
+                  for (let i = 0; i < len; i++) {
+                    const row = result.rows.item(i);
+                    data.push({
+                      id: row.id,
+                      word: row.word,
+                      translation: row.translation,
+                      tag: row.tag,
+                      count: row.count,
+                    });
+                  }
+                  const shuffledData = data.sort(() => Math.random() - 0.5);
+            
+                  console.log("Data fetched from SQLite:", shuffledData);
+            
+                  setCards(shuffledData);
+                  setLoading(false);
+                }
+              );
             });
+            
 
             db.transaction((tx) => {
               tx.executeSql(
@@ -176,57 +209,78 @@ db.transaction((tx) => {
   }, []);
 
   const handleYup = (card) => {
-    console.log(`Swiped right for: ${card.word}`);
     setSwipedRightCount((prevCount) => prevCount + 1);
     setCurrentCardId(card.id);
     AsyncStorage.setItem("lastCardId", card.id.toString());
-
-    console.log(`Current Card ID (Yup): ${card.id}`);
-
-    console.log("Swiped right for card:", card);
-    if (card.id) {
-      console.log("Current Card ID (Yup):", card.id);
-      setCurrentCardId(card.id);
-    } else {
-      console.log("Card does not have an ID property.");
-    }
-
-    updateSwipedRightCount((prevCount) => prevCount + 1);
-    setCurrentCardId(card.id);
-    AsyncStorage.setItem("lastCardId", card.id.toString());
-
+  
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT count FROM words WHERE id = ?;",
+        [card.id],
+        (tx, result) => {
+          const currentCount = result.rows.item(0).count || 0;
+          tx.executeSql(
+            "UPDATE words SET tag = 'right', count = ? WHERE id = ?;",
+            [currentCount + 1, card.id],
+            (tx, result) => {
+              console.log("Card swiped right:", card.word);
+            },
+            (error) => {
+              console.log("Error updating tag and count:", error);
+            }
+          );
+        },
+        (error) => {
+          console.log("Error fetching count:", error);
+        }
+      );
+    });
   };
-
+  
   const handleNope = (card) => {
-    console.log(`Swiped left for: ${card.word}`);
     setSwipedLeftCount((prevCount) => prevCount + 1);
     setCurrentCardId(card.id);
-
-    console.log(`Current Card ID (Yup): ${card.id}`);
-    console.log("Swiped left for card:", card);
-    if (card.id) {
-      console.log("Current Card ID (Nope):", card.id);
-      setCurrentCardId(card.id);
-    } else {
-      console.log("Card does not have an ID property.");
-    }
+  
     AsyncStorage.setItem("lastCardId", card.id.toString());
-
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT count FROM words WHERE id = ?;",
+        [card.id],
+        (tx, result) => {
+          const currentCount = result.rows.item(0).count || 0;
+          tx.executeSql(
+            "UPDATE words SET tag = 'left', count = ? WHERE id = ?;",
+            [currentCount + 1, card.id],
+            (tx, result) => {
+              console.log("Card swiped left:", card.word);
+            },
+            (error) => {
+              console.log("Error updating tag and count:", error);
+            }
+          );
+        },
+        (error) => {
+          console.log("Error fetching count:", error);
+        }
+      );
+    });
   };
-
+  
   const handleAddWord = (word, translation) => {
     // Add a new word to the SQLite database
     db.transaction((tx) => {
-      tx.executeSql(
-        "INSERT INTO words (word, translation) VALUES (?, ?);",
-        [word, translation],
-        (tx, result) => {
-          console.log("Word added to the database:", word, translation);
-        },
-        (error) => {
-          console.log("Error adding word to the database: ", error);
-        }
-      );
+// Inside the transaction where you insert new data
+tx.executeSql(
+  "INSERT INTO words (word, translation, tag, count) VALUES (?, ?, ?, ?);",
+  [word, translation, "", 0],  // Initialize tag as an empty string and count as 0
+  (tx, result) => {
+    console.log("Data inserted successfully:", word, translation, tag, count);
+  },
+  (error) => {
+    console.log("Error inserting data: ", error);
+  }
+);
+
     });
 
     const newCard = { id: cards.length + 1, word, translation };
@@ -248,12 +302,19 @@ db.transaction((tx) => {
       ) : (
         <>
 
+{/* <Text>Data Source: {dataSource}</Text>
+<Text>Number of Words in DB: {wordCount}</Text> */}
+<Text>Swiped Right: {swipedRightCount}</Text>
+<Text>Swiped Left: {swipedLeftCount}</Text>
+<Text>Current Card ID: {currentCardId}</Text>
   
-           <Text>Data Source: {dataSource}</Text>
-          <Text>Number of Words in DB: {wordCount}</Text>
-          <Text>Swiped Right: {swipedRightCount}</Text>
-          <Text>Swiped Left: {swipedLeftCount}</Text>
-          <Text>Current Card ID: {currentCardId}</Text> 
+{currentCardId && (
+      <>
+        <Text>Current Card Tag: {cards.find(card => card.id === currentCardId)?.tag}</Text>
+        <Text>Current Card Count: {cards.find(card => card.id === currentCardId)?.count}</Text>
+      </>
+    )}
+
        
           <View style={styles.containerProgress}>
           <RadialProgress value={Math.round((swipedRightCount / wordCount) * 100)} />

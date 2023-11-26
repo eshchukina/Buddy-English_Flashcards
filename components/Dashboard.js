@@ -24,7 +24,7 @@ export default function DownloadPage({ setSelectedComponent }) {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.text}>Hello! Your progress: </Text>
       <Text style={styles.textIcon}>
-          <Medal name="medal" size={50}  />
+          <Medal name="medal" size={50} color="#6c526f" />
         </Text>
 
 
