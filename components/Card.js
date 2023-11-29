@@ -55,10 +55,14 @@ const Card = ({ word, translation, count }) => {
 
   const renderStar = () => {
     if (count < 0 || count == null) {
-      return <StarOutline name="star-outline" size={30} color="#f9d479" />;
+      return null;
     } else if (count === 1) {
-      return <StarHalf name="star-half-sharp" size={32} color="#f9d479" />;
-    } else if (count > 2) {
+      return <StarOutline name="star-outline" size={30} color="#f9d479" />;}
+
+      else if (count === 2) {
+        return <StarHalf name="star-half-sharp" size={32} color="#f9d479" />;
+
+    } else if (count >= 3) {
       return <Star name="star-sharp" size={32} color="#f9d479" />;
     } else {
       return null; // or provide a default case

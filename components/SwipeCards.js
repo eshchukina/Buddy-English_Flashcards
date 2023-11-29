@@ -10,11 +10,12 @@ import Card from "./Card";
 import RadialProgress from "./RadialProgress";
 
 import Add from "react-native-vector-icons/MaterialIcons";
+import Passing from "./Passing";
 
  import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-const SwipeCard = ({ updateSwipedRightCount }) => {
+ const SwipeCard = ({ updateSwipedRightCount, onRadialProgressChange }) => {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(true);
@@ -27,6 +28,9 @@ const SwipeCard = ({ updateSwipedRightCount }) => {
   const [showNoMoreCards, setShowNoMoreCards] = useState(false);
 const [lastVisitedCardId, setLastVisitedCardId] = useState(null);
 
+const [wordCountWithTagRight, setWordCountWithTagRight] = useState(0);
+
+  
 
 const db = SQLite.openDatabase("mydatabase.db");
 const fetchDataFromAPI = async () => {
@@ -120,10 +124,29 @@ db.transaction((tx) => {
             
 
             setCards(cardsToDisplay);
+            const wordCountRight = apiData.filter((word) => word.tag === 'right').length;
+            setWordCountWithTagRight(wordCountRight);
+            
+
             
           } else {
             setDataSource("SQLite");
-
+            db.transaction((tx) => {
+              tx.executeSql(
+                "SELECT COUNT(*) as count FROM words WHERE tag = 'right';",
+                [],
+                (tx, result) => {
+                  const countRight = result.rows.item(0).count;
+                  setWordCountWithTagRight(countRight);
+                },
+                (error) => {
+                  console.log(
+                    "Ошибка при получении количества слов с тегом 'right' из SQLite:",
+                    error
+                  );
+                }
+              );
+            });
             db.transaction((tx) => {
               tx.executeSql(
                 "SELECT * FROM words ORDER BY RANDOM();",
@@ -208,6 +231,25 @@ db.transaction((tx) => {
     fetchAndSetData();
   }, []);
 
+  useEffect(() =>{
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT COUNT(*) as count FROM words WHERE tag = 'right';",
+        [],
+        (tx, result) => {
+          const countRight = result.rows.item(0).count;
+          setWordCountWithTagRight(countRight);
+        },
+        (error) => {
+          console.log(
+            "Ошибка при получении количества слов с тегом 'right' из SQLite:",
+            error
+          );
+        }
+      );
+    });
+  },);
+
   const handleYup = (card) => {
     setSwipedRightCount((prevCount) => prevCount + 1);
     setCurrentCardId(card.id);
@@ -274,7 +316,7 @@ tx.executeSql(
   "INSERT INTO words (word, translation, tag, count) VALUES (?, ?, ?, ?);",
   [word, translation, "", 0],  // Initialize tag as an empty string and count as 0
   (tx, result) => {
-    console.log("Data inserted successfully:", word, translation, tag, count);
+    // console.log("Data inserted successfully:", word, translation, tag, count);
   },
   (error) => {
     console.log("Error inserting data: ", error);
@@ -317,7 +359,9 @@ tx.executeSql(
 
        
           <View style={styles.containerProgress}>
-          <RadialProgress value={Math.round((swipedRightCount / wordCount) * 100)} />
+          {/* <RadialProgress value={Math.round((swipedRightCount / wordCount) * 100)} /> */}
+          <RadialProgress value={Math.round((wordCountWithTagRight / wordCount) * 100)} />
+
             </View> 
           <SwipeCards
             cards={cards}

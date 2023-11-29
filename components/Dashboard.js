@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, ScrollView, Pressable, Image } from "react-native";
-
+import Passing from "./Passing";
 import Cards from "react-native-vector-icons/MaterialCommunityIcons";
 
-import Medal from "react-native-vector-icons/FontAwesome5";
 
 
-export default function DownloadPage({ setSelectedComponent }) {
+export default function Dashboard({ setSelectedComponent }) {
   const [isPressed, setIsPressed] = useState(false);
+
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -22,12 +22,8 @@ export default function DownloadPage({ setSelectedComponent }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.text}>Hello! Your progress: </Text>
-      <Text style={styles.textIcon}>
-          <Medal name="medal" size={50} color="#6c526f" />
-        </Text>
-
-
+ 
+ <Passing  />
 
       <Pressable
         underlayColor="#c4661f"
