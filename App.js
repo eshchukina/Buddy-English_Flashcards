@@ -62,7 +62,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (swipedRightCount % 10 === 0 && swipedRightCount > 0) {
+    if (swipedRightCount % 2 === 0 && swipedRightCount > 0) {
       showToast();
     }
   }, [swipedRightCount]);

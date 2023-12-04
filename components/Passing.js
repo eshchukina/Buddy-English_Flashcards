@@ -24,17 +24,17 @@ const Passing = ({ radialProgressPercentage }) => {
   }, []);
 
   const getMedalColor = () => {
-    if (storedPercentage > 1 && storedPercentage <= 34) {
+    if (storedPercentage > 1 && storedPercentage <= 33) {
       return { color: "#cd7f32", level: " Your level: Novice", text:"A good start, everything is ahead!"
     };
-    } else if (storedPercentage >= 35 && storedPercentage <= 67) {
+    } else if (storedPercentage >= 34 && storedPercentage <= 66) {
       return { color: "#c0c0c0", level: "Your level: Intermediate", text: "Excellent, keep it up!"
     };
-    } else if (storedPercentage >= 68 && storedPercentage <= 98) {
+    } else if (storedPercentage >= 67 && storedPercentage <= 99) {
       return { color: "#FFD700", level: "Your level: Advanced", text:"Incredible, the finish line is near!"
     };
     } 
-    else if (storedPercentage > 99) {
+    else if (storedPercentage >= 100) {
         return { color: "#FFD700", level: "Expert" , text: "You've done it all!"
     };
       } 
@@ -59,7 +59,7 @@ const Passing = ({ radialProgressPercentage }) => {
    {getMedalColor().level}
       </Text>
       <Text style={[styles.textIcon, { color: getMedalColor().color, display: getMedalColor().dispaly }]}>
-        <Medal name="medal" size={50} />
+        <Medal name="medal" size={60} />
       </Text>
     </View>
   );
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
 
   },
   textIcon: {
-    marginLeft: 10,
+    marginTop: 20,
     textAlign:"center",
 
   },

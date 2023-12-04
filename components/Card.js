@@ -56,16 +56,17 @@ const Card = ({ word, translation, count }) => {
   const renderStar = () => {
     if (count < 0 || count == null) {
       return null;
-    } else if (count === 1) {
-      return <StarOutline name="star-outline" size={30} color="#f9d479" />;}
+    } else if (count==  1) {
+      return <StarHalf name="star-half-sharp" size={32} color="#f9d479" />;}
 
-      else if (count === 2) {
-        return <StarHalf name="star-half-sharp" size={32} color="#f9d479" />;
+      else if (count == 2) {
+        return <Star name="star-sharp" size={32} color="#f9d479" />;
 
     } else if (count >= 3) {
       return <Star name="star-sharp" size={32} color="#f9d479" />;
     } else {
-      return null; // or provide a default case
+      return <StarOutline name="star-outline" size={30} color="#f9d479" />;
+
     }
   };
 
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     borderWidth: 5,
   },
   cardText: {
-    fontSize: 40,
+    fontSize: 35,
     color: "#fefae0",
     fontFamily: "vidaloka",
     textAlign: "center",
@@ -143,6 +144,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     top: 60,
+  },
+  cardStar:{
+marginBottom:10,
   },
 });
 
