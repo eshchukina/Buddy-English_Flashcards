@@ -3,11 +3,8 @@ import { StyleSheet, Text, ScrollView, Pressable, Image } from "react-native";
 import Passing from "./Passing";
 import Cards from "react-native-vector-icons/MaterialCommunityIcons";
 
-
-
 export default function Dashboard({ setSelectedComponent }) {
   const [isPressed, setIsPressed] = useState(false);
-
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -22,8 +19,7 @@ export default function Dashboard({ setSelectedComponent }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
- 
- <Passing  />
+      <Passing />
 
       <Pressable
         underlayColor="#c4661f"
@@ -95,6 +91,7 @@ const styles = StyleSheet.create({
     color: "#f9ebc7",
     textAlign: "center",
     fontSize: 18,
+    fontFamily: "vidaloka",
   },
   buttonActiveText: {
     color: "#783d19",

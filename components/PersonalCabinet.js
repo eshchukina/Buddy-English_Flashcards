@@ -7,31 +7,122 @@ import {
   Linking,
   Pressable,
   Share as ShareModule,
-  Image, // Add this line to import the Image component
-
+  Image,
+  SafeAreaView,
+  Button, // Add this line to import the Image component
 } from "react-native";
 
 import * as ImagePicker from "expo-image-picker";
-
-import Icon from "react-native-vector-icons/FontAwesome5";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import ModalSetting from "./ModalSetting";
+import Setting from "react-native-vector-icons/SimpleLineIcons";
 import Icon2 from "react-native-vector-icons/AntDesign";
 import Mail from "react-native-vector-icons/AntDesign";
 import Share from "react-native-vector-icons/Entypo";
 import Info from "react-native-vector-icons/FontAwesome5";
+import { useUser } from "@clerk/clerk-react";
+
+import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-expo";
+import Constants from "expo-constants";
+import SignUpScreen from "./SignUpScreen";
+import SignInScreen from "./SignInScreen";
+import SignInWithOAuth from "./SignInWithOAuth";
+
+import * as SecureStore from "expo-secure-store";
+
+import Home from "./Home";
+import Home1 from "./Home1";
+
+const tokenCache = {
+  async getToken(key) {
+    try {
+      return SecureStore.getItemAsync(key);
+    } catch (err) {
+      return null;
+    }
+  },
+  async saveToken(key, value) {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (err) {
+      return;
+    }
+  },
+};
+
+const SignOut = () => {
+  const { isLoaded, signOut } = useAuth();
+
+  const removeAvatarFromStorage = async () => {
+    try {
+      await AsyncStorage.removeItem("avatarURI");
+      setAvatar(null);
+    } catch (error) {
+      console.error("Error in AsyncStorage:", error);
+    }
+  };
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  return (
+    <TouchableHighlight
+      underlayColor="#c4661f"
+      style={styles.button}
+      onPress={() => {
+        removeAvatarFromStorage();
+
+        signOut();
+      }}
+    >
+      <Text style={styles.iconText}>
+        <Icon2 name="logout" size={25} />
+      </Text>
+    </TouchableHighlight>
+  );
+};
 
 const PersonalCabinet = ({
   setSelectedComponent,
   setIsPersonalCabinetOpen,
 }) => {
   const [avatar, setAvatar] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const openPersonalCabinet = () => {
     setIsPersonalCabinetOpen(true);
   };
 
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
   useEffect(() => {
     openPersonalCabinet();
   }, []);
+
+  const saveAvatarToStorage = async (uri) => {
+    try {
+      await AsyncStorage.setItem("avatarURI", uri);
+    } catch (error) {
+      console.error("Error saving avatar URI:", error);
+    }
+  };
+
+  const loadAvatarFromStorage = async () => {
+    try {
+      const uri = await AsyncStorage.getItem("avatarURI");
+      if (uri) {
+        setAvatar(uri);
+      }
+    } catch (error) {
+      console.error("Error loading avatar URI:", error);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -41,9 +132,9 @@ const PersonalCabinet = ({
         console.log("Permission to access media library denied");
         return;
       }
+      loadAvatarFromStorage();
     })();
   }, []);
-
   const selectAvatar = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -55,6 +146,7 @@ const PersonalCabinet = ({
 
       if (!result.cancelled) {
         setAvatar(result.uri);
+        saveAvatarToStorage(result.uri);
       }
     } catch (error) {
       console.error("Error selecting image:", error);
@@ -108,70 +200,83 @@ const PersonalCabinet = ({
 
   return (
     <View style={styles.container}>
-      <View style={styles.userPhotoContainer}>
-        <Pressable onPress={selectAvatar} style={styles.circularPlaceholder}>
-          {avatar ? (
-            <Image source={{ uri: avatar }} style={styles.avatarImage} />
-          ) : (
-            <Text style={styles.buttonText}>
-              <Icon name="photo-video" size={50} />
-            </Text>
-          )}
-        </Pressable>
-      </View>
-      <Text style={styles.heading}>Personal Cabinet</Text>
-      <View style={styles.userInfo}>
-        <Text style={styles.text}>name: John Doe</Text>
-        <Text style={styles.text}>email: johndoe@example.com</Text>
-        <View style={styles.iconsRow}>
-          <TouchableHighlight
-            underlayColor="#c4661f"
-            style={styles.buttonInfo}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            onPress={openInfo}
-          >
-            <Text style={styles.iconText}>
-              <Info name="info" size={25} />
-            </Text>
-          </TouchableHighlight>
+      <ClerkProvider
+        tokenCache={tokenCache}
+        publishableKey={Constants.expoConfig.extra.clerkPublishableKey}
+      >
+        <SafeAreaView style={styles.wrapperInfo}>
+          <View style={styles.userPhotoContainer}>
+            <Pressable
+              onPress={selectAvatar}
+              style={styles.circularPlaceholder}
+            >
+              {avatar ? (
+                <Image source={{ uri: avatar }} style={styles.avatarImage} />
+              ) : (
+                <Home1 />
+              )}
+            </Pressable>
+          </View>
+          <View>
+            <Text style={styles.heading}>Personal Cabinet</Text>
+            <View style={styles.userInfo}>
+              <Home />
+            </View>
+          </View>
 
-          <TouchableHighlight
-            underlayColor="#c4661f"
-            style={styles.button}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            onPress={sendEmail}
-          >
-            <Text style={styles.iconText}>
-              <Mail name="mail" size={25} />
-            </Text>
-          </TouchableHighlight>
+          <View style={styles.iconsRow}>
+            <TouchableHighlight
+              underlayColor="#c4661f"
+              style={styles.buttonInfo}
+              onPressIn={handlePressIn}
+              onPressOut={handlePressOut}
+              onPress={openInfo}
+            >
+              <Text style={styles.iconText}>
+                <Info name="info" size={25} />
+              </Text>
+            </TouchableHighlight>
 
-          <TouchableHighlight
-            underlayColor="#c4661f"
-            style={styles.button}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            onPress={shareApp}
-          >
-            <Text style={styles.iconText}>
-              <Share name="share" size={25} />
-            </Text>
-          </TouchableHighlight>
+            <TouchableHighlight
+              underlayColor="#c4661f"
+              style={styles.button}
+              onPressIn={handlePressIn}
+              onPressOut={handlePressOut}
+              onPress={sendEmail}
+            >
+              <Text style={styles.iconText}>
+                <Mail name="mail" size={25} />
+              </Text>
+            </TouchableHighlight>
 
-          <TouchableHighlight
-            underlayColor="#c4661f"
-            style={styles.button}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-          >
-            <Text style={styles.iconText}>
-              <Icon2 name="logout" size={25} />
-            </Text>
-          </TouchableHighlight>
-        </View>
-      </View>
+            <TouchableHighlight
+              underlayColor="#c4661f"
+              style={styles.button}
+              onPressIn={handlePressIn}
+              onPressOut={handlePressOut}
+              onPress={shareApp}
+            >
+              <Text style={styles.iconText}>
+                <Share name="share" size={25} />
+              </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              underlayColor="#c4661f"
+              style={styles.button}
+              onPressIn={handlePressIn}
+              onPressOut={handlePressOut}
+              onPress={openModal}
+            >
+              <Text style={styles.iconText}>
+                <Setting name="settings" size={25} />
+              </Text>
+            </TouchableHighlight>
+
+            <SignOut />
+          </View>
+        </SafeAreaView>
+      </ClerkProvider>
+      <ModalSetting modalVisible={modalVisible} closeModal={closeModal} />
     </View>
   );
 };
@@ -181,9 +286,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
     backgroundColor: "#fefae0",
   },
+
   heading: {
     fontFamily: "vidaloka",
     fontSize: 24,
@@ -221,41 +326,27 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   userInfo: {
+    position: "relative]",
     marginBottom: 20,
-    textAlign: "center",
   },
-  text: {
-    color: "#783d19",
-    fontFamily: "vidaloka",
-    marginBottom: 20,
-    marginLeft: 20,
-    fontSize: 18,
-  },
+
   userPhotoContainer: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
     overflow: "hidden",
     marginBottom: 20,
     textAlign: "center",
     color: "#783d19",
   },
-  buttonText: {
-    fontFamily: "vidaloka",
-    position: "relative",
-    left: 45,
-    top: 45,
-    color: "#783d19",
-  },
+
   circularPlaceholder: {
-    flex: 1,
     width: "100%",
     height: "100%",
     backgroundColor: "#f9ebc7",
     borderRadius: 75,
     textAlign: "center",
-    width: 150,
-    height: 150,
+
     overflow: "hidden",
   },
   avatarImage: {
@@ -266,13 +357,18 @@ const styles = StyleSheet.create({
   iconsRow: {
     flexDirection: "row",
     textAlign: "center",
-    marginTop: 12,
+    marginTop: 100,
     alignItems: "center",
     justifyContent: "space-between",
+    flexWrap: "wrap",
   },
   iconText: {
     marginRight: 10,
     color: "#783d19",
+  },
+  wrapperInfo: {
+    display: "flex",
+    alignItems: "center",
   },
 });
 

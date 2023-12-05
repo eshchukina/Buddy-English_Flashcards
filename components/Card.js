@@ -1,9 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { StyleSheet, Text, View, Animated, Pressable } from "react-native";
 import Star from "react-native-vector-icons/Ionicons";
 import StarHalf from "react-native-vector-icons/Ionicons";
 import StarOutline from "react-native-vector-icons/Ionicons";
-
 
 const Card = ({ word, translation, count }) => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -56,17 +55,14 @@ const Card = ({ word, translation, count }) => {
   const renderStar = () => {
     if (count < 0 || count == null) {
       return null;
-    } else if (count==  1) {
-      return <StarHalf name="star-half-sharp" size={32} color="#f9d479" />;}
-
-      else if (count == 2) {
-        return <Star name="star-sharp" size={32} color="#f9d479" />;
-
+    } else if (count == 1) {
+      return <StarHalf name="star-half-sharp" size={32} color="#f9d479" />;
+    } else if (count == 2) {
+      return <Star name="star-sharp" size={32} color="#f9d479" />;
     } else if (count >= 3) {
       return <Star name="star-sharp" size={32} color="#f9d479" />;
     } else {
       return <StarOutline name="star-outline" size={30} color="#f9d479" />;
-
     }
   };
 
@@ -74,28 +70,14 @@ const Card = ({ word, translation, count }) => {
     <Pressable style={styles.cardContainer} onPress={flipCard}>
       <View style={styles.flashcard}>
         <Animated.View style={[styles.card, frontAnimatedStyle]}>
-          <Text style={styles.cardStar}>
-         {renderStar()}
-
-
-          </Text> 
-           <Text style={styles.cardText}>{word}
-       
-
-
-          </Text>
-        
+          <Text style={styles.cardStar}>{renderStar()}</Text>
+          <Text style={styles.cardText}>{word}</Text>
         </Animated.View>
         <Animated.View
           style={[styles.card, styles.cardBack, backAnimatedStyle]}
         >
-            <Text style={styles.cardStar}>
-         {renderStar()}
-
-
-          </Text>
-          <Text style={styles.cardText}>{translation}  
-          </Text>
+          <Text style={styles.cardStar}>{renderStar()}</Text>
+          <Text style={styles.cardText}>{translation}</Text>
         </Animated.View>
       </View>
     </Pressable>
@@ -145,8 +127,8 @@ const styles = StyleSheet.create({
     position: "relative",
     top: 60,
   },
-  cardStar:{
-marginBottom:10,
+  cardStar: {
+    marginBottom: 10,
   },
 });
 

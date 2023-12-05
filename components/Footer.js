@@ -7,6 +7,7 @@ import Cards from "react-native-vector-icons/MaterialCommunityIcons";
 const Footer = ({ setSelectedComponent, isPersonalCabinetOpen }) => {
   const [isPressed, setIsPressed] = useState(false);
   const [isPressed1, setIsPressed1] = useState(false);
+  const [isPressed2, setIsPressed2] = useState(false);
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -22,6 +23,14 @@ const Footer = ({ setSelectedComponent, isPersonalCabinetOpen }) => {
 
   const handlePressOut1 = () => {
     setIsPressed1(false);
+  };
+
+  const handlePressIn2 = () => {
+    setIsPressed2(true);
+  };
+
+  const handlePressOut2 = () => {
+    setIsPressed2(false);
   };
 
   const handleButton1Press = () => {
@@ -41,38 +50,41 @@ const Footer = ({ setSelectedComponent, isPersonalCabinetOpen }) => {
       <Pressable
         underlayColor="#c4661f"
         style={styles.button}
-        onPressIn={handlePressIn1}
-        onPressOut={handlePressOut1}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
         onPress={handleButton1Press}
       >
-        <Text
-          style={[styles.buttonText, isPressed1 && styles.buttonActiveText]}
-        >
+        <Text style={[styles.buttonText, isPressed && styles.buttonActiveText]}>
           <Clipboard name="clipboard" size={44} />
         </Text>
       </Pressable>
 
-      <Pressable
-        underlayColor="#c4661f"
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        style={styles.button2}
-        onPress={handleButton2Press}
-      >
-        <Text style={[styles.buttonText, isPressed && styles.buttonActiveText]}>
-          <Icon name="user" size={40} />
-        </Text>
-      </Pressable>
-
+      {!isPersonalCabinetOpen && (
+        <Pressable
+          underlayColor="#c4661f"
+          onPressIn={handlePressIn1}
+          onPressOut={handlePressOut1}
+          style={styles.button2}
+          onPress={handleButton2Press}
+        >
+          <Text
+            style={[styles.buttonText, isPressed1 && styles.buttonActiveText]}
+          >
+            <Icon name="user" size={40} />
+          </Text>
+        </Pressable>
+      )}
       {isPersonalCabinetOpen && (
         <Pressable
           underlayColor="#c4661f"
           style={styles.button2}
-          // onPressIn={handlePressIn}
-          // onPressOut={handlePressOut}
+          onPressIn={handlePressIn2}
+          onPressOut={handlePressOut2}
           onPress={handleButton3Press}
         >
-          <Text style={styles.buttonText}>
+          <Text
+            style={[styles.buttonText, isPressed2 && styles.buttonActiveText]}
+          >
             <Cards name="cards" size={40} />
           </Text>
         </Pressable>

@@ -11,7 +11,6 @@ export const isEmailValid = (email) => {
     return password.length >= 6; 
   };
   
-  // Проверка валидности имени
   export const isNameValid = (name) => {
     return name.trim() !== ''; 
   };

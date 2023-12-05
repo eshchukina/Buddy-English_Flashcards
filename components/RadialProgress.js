@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
-import * as Animatable from 'react-native-animatable';
+import * as Animatable from "react-native-animatable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RadialProgress = ({ value }) => {
   const [percentage, setPercentage] = useState(0);
 
   useEffect(() => {
-    // Load the percentage value from AsyncStorage when the component mounts
     const loadPercentage = async () => {
       try {
         const storedPercentage = await AsyncStorage.getItem("percentage");
@@ -22,25 +21,22 @@ const RadialProgress = ({ value }) => {
     loadPercentage();
   }, []);
 
-// ...
+  
 
-useEffect(() => {
-  // Save the percentage value to AsyncStorage whenever it changes
-  const savePercentage = async () => {
-    try {
-      await AsyncStorage.setItem("percentage", percentage.toString());
-      // Log the data added to AsyncStorage
-      console.log("Data saved to AsyncStorage:", percentage);
-    } catch (error) {
-      console.error("Error saving percentage to AsyncStorage:", error);
-    }
-  };
+  useEffect(() => {
+    const savePercentage = async () => {
+      try {
+        await AsyncStorage.setItem("percentage", percentage.toString());
+        console.log("Data saved to AsyncStorage:", percentage);
+      } catch (error) {
+        console.error("Error saving percentage to AsyncStorage:", error);
+      }
+    };
 
-  savePercentage();
-}, [percentage]);
+    savePercentage();
+  }, [percentage]);
 
-// ...
-
+ 
 
   useEffect(() => {
     setPercentage(value);

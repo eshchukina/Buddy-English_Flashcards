@@ -11,7 +11,7 @@ import Info from "./components/Info";
 import * as Font from "expo-font";
 import FlashcardDeck from "./components/FlashcardDeck";
 import Toast from "react-native-toast-message";
-
+import SettingsComponent from "./components/SettingsComponent";
 import { LogBox } from "react-native";
 LogBox.ignoreLogs(["Warning: ..."]);
 LogBox.ignoreAllLogs();
@@ -34,14 +34,13 @@ export default function App() {
   const toggleComponent = (component) => {
     setSelectedComponent(component);
     showToast();
-    console.log("всплывающее сообщение");
   };
 
   const showToast = () => {
     Toast.show({
       type: "success",
       text1: "Well done!",
-      text2: `You've made ${swipedRightCount} correct swipes!`,
+      // text2: `You've made ${swipedRightCount} correct swipes!`,
 
       style: {
         backgroundColor: "red",
@@ -62,7 +61,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (swipedRightCount % 2 === 0 && swipedRightCount > 0) {
+    if (swipedRightCount % 15 === 0 && swipedRightCount > 0) {
       showToast();
     }
   }, [swipedRightCount]);
@@ -86,6 +85,7 @@ export default function App() {
             <FlashcardDeck
               setSelectedComponent={setSelectedComponent}
               updateSwipedRightCount={updateSwipedRightCount}
+                          setIsPersonalCabinetOpen={setIsPersonalCabinetOpen}
             />
             <Footer setSelectedComponent={setSelectedComponent} />
           </>
@@ -105,8 +105,22 @@ export default function App() {
             <Info setSelectedComponent={setSelectedComponent} />
             <Footer setSelectedComponent={setSelectedComponent} />
           </>
-        ) : null}
-        {/* <Button title="Показать уведомление" onPress={showToast} /> */}
+        ) :
+        
+        selectedComponent === "setting" ? (
+          <>
+            <SettingsComponent setSelectedComponent={setSelectedComponent} 
+                          setIsPersonalCabinetOpen={setIsPersonalCabinetOpen}
+                          />
+            <Footer
+              setSelectedComponent={setSelectedComponent}
+              isPersonalCabinetOpen={isPersonalCabinetOpen}
+            />        
+              </>
+        ) :
+        
+        
+        null}
 
         <StatusBar style="auto" />
         <Toast />

@@ -4,7 +4,12 @@ import Left from "react-native-vector-icons/AntDesign";
 import Right from "react-native-vector-icons/AntDesign";
 import SwipeCards from "./SwipeCards.js";
 
-const FlashcardDeck = ({ updateSwipedRightCount }) => {
+const FlashcardDeck = ({
+  updateSwipedRightCount,
+  restartApp,
+  setSelectedComponent,
+  setIsPersonalCabinetOpen,
+}) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -27,7 +32,7 @@ const FlashcardDeck = ({ updateSwipedRightCount }) => {
     <View style={styles.container}>
       <Text style={styles.text}>
         Swipe the card to the left if you don't know the word, and to the right
-        if you know it! 
+        if you know it!
       </Text>
       {/* {isVisible && (
         <Text style={styles.textIcon}>
@@ -42,6 +47,8 @@ const FlashcardDeck = ({ updateSwipedRightCount }) => {
 
       <SwipeCards
         updateSwipedRightCount={updateSwipedRightCount}
+        setSelectedComponent={setSelectedComponent}
+        setIsPersonalCabinetOpen={setIsPersonalCabinetOpen}
         style={{ flex: 1 }}
       />
     </View>
@@ -87,7 +94,6 @@ const styles = StyleSheet.create({
     zIndex: 2,
     margin: 10,
   },
-
 });
 
 export default FlashcardDeck;

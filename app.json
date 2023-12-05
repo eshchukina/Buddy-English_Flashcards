@@ -31,7 +31,9 @@
     "extra": {
       "eas": {
         "projectId": "9bc70ab5-7e68-47e7-986f-655043b357af"
-      }
+      },
+      "clerkPublishableKey": "pk_test_c2Vuc2libGUtaG9ybmV0LTY5LmNsZXJrLmFjY291bnRzLmRldiQ"
+
     },
     "runtimeVersion": "1.0.0",
 

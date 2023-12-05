@@ -9,11 +9,18 @@ import Card from "./Card";
 import RadialProgress from "./RadialProgress";
 
 import Add from "react-native-vector-icons/MaterialIcons";
-
+import Fireworks from "./Fireworks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Reload from "react-native-vector-icons/AntDesign";
+import ModalRestart from "./ModalRestart";
+import SettingsComponent from "./SettingsComponent";
 
-const SwipeCard = ({ updateSwipedRightCount, onRadialProgressChange }) => {
+const SwipeCard = ({
+  setIsPersonalCabinetOpen,
+  updateSwipedRightCount,
+  onRadialProgressChange,
+  setSelectedComponent,
+}) => {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(true);
@@ -38,35 +45,38 @@ const SwipeCard = ({ updateSwipedRightCount, onRadialProgressChange }) => {
   const [showStartButton, setShowStartButton] = useState(false);
   const [showView, setShowView] = useState(false);
 
+  const [isVisible, setIsVisible] = useState(true);
 
-  
+  useEffect(() => {
+    const visibilityDuration = 5000; 
+
+    const timeoutId = setTimeout(() => {
+      setIsVisible(false);
+    }, visibilityDuration);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setShowView(true);
     }, 2000);
 
-    // Очистка таймаута при размонтировании компонента
     return () => clearTimeout(timeoutId);
-  }, []); 
+  }, []);
 
-  
   useEffect(() => {
-    const startButtonValue =  AsyncStorage.getItem("startButton");
-console.log('startButtonValue ',startButtonValue);
-    // Check if the start button value is set in AsyncStorage
+    const startButtonValue = AsyncStorage.getItem("startButton");
+    console.log("startButtonValue ", startButtonValue);
     if (startButtonValue && startButtonValue === "0") {
-        setShowStartButton(true);
-    }
-     else if (startButtonValue && startButtonValue === "1") {
+      setShowStartButton(true);
+    } else if (startButtonValue && startButtonValue === "1") {
       setShowStartButton(false);
-  }
-
-
+    }
 
     setDataLoaded(true);
-   fetchAndSetData();
-}, []);
-
+    fetchAndSetData();
+  }, []);
 
   // console.log('start');
   const db = SQLite.openDatabase("mydatabase.db");
@@ -118,154 +128,152 @@ console.log('startButtonValue ',startButtonValue);
   // });
 
   // useEffect(() => {
-    const fetchAndSetData = async () => {
-      try {
-        const netInfoState = await NetInfo.fetch();
-        setIsOnline(netInfoState.isConnected);
+  const fetchAndSetData = async () => {
+    try {
+      const netInfoState = await NetInfo.fetch();
+      setIsOnline(netInfoState.isConnected);
 
-        db.transaction(async (tx) => {
-          const countResult = await new Promise((resolve, reject) => {
+      db.transaction(async (tx) => {
+        const countResult = await new Promise((resolve, reject) => {
+          tx.executeSql(
+            "SELECT COUNT(*) as count FROM words;",
+            [],
+            (tx, result) => {
+              resolve(result);
+            },
+            (error) => {
+              reject(error);
+            }
+          );
+        });
+
+        let count = countResult.rows.item(0).count;
+
+        if (count === 0 && netInfoState.isConnected) {
+          const apiData = await fetchDataFromAPI();
+
+          apiData.forEach(({ word, translation }) => {
+            db.transaction((tx) => {
+              tx.executeSql(
+                "INSERT INTO words (word, translation, tag, count) VALUES (?, ?, ?, ?);",
+                [word, translation, "", 0], // Initialize tag as an empty string and count as 0
+                (tx, result) => {
+                  // console.log("Data inserted successfully:", word, translation);
+                },
+                (error) => {
+                  console.log("Error inserting data: ", error);
+                }
+              );
+            });
+          });
+
+          setCards(apiData);
+          const wordCountRight = apiData.filter(
+            (word) => word.tag === "right"
+          ).length;
+          setWordCountWithTagRight(wordCountRight);
+
+          setDataLoaded(true); 
+        } else {
+          setDataSource("SQLite");
+          db.transaction((tx) => {
             tx.executeSql(
-              "SELECT COUNT(*) as count FROM words;",
+              "SELECT COUNT(*) as count FROM words WHERE tag = 'right';",
               [],
               (tx, result) => {
-                resolve(result);
+                const countRight = result.rows.item(0).count;
+                setWordCountWithTagRight(countRight);
               },
               (error) => {
-                reject(error);
+                console.log(
+                  "Ошибка при получении количества слов с тегом 'right' из SQLite:",
+                  error
+                );
+              }
+            );
+          });
+          db.transaction((tx) => {
+            tx.executeSql(
+              "SELECT * FROM words WHERE count < 3 ORDER BY RANDOM();",
+              [],
+              (tx, result) => {
+                const len = result.rows.length;
+                const data = [];
+                for (let i = 0; i < len; i++) {
+                  const row = result.rows.item(i);
+                  data.push({
+                    id: row.id,
+                    word: row.word,
+                    translation: row.translation,
+                    tag: row.tag,
+                    count: row.count,
+                  });
+                }
+                const shuffledData = data.sort(() => Math.random() - 0.5);
+
+                setCards(shuffledData);
+                console.log(shuffledData);
+
+                setLoading(false);
               }
             );
           });
 
-          let count = countResult.rows.item(0).count;
-
-          if (count === 0 && netInfoState.isConnected) {
-            const apiData = await fetchDataFromAPI();
-
-            apiData.forEach(({ word, translation }) => {
-              db.transaction((tx) => {
-                tx.executeSql(
-                  "INSERT INTO words (word, translation, tag, count) VALUES (?, ?, ?, ?);",
-                  [word, translation, "", 0], // Initialize tag as an empty string and count as 0
-                  (tx, result) => {
-                    // console.log("Data inserted successfully:", word, translation);
-                  },
-                  (error) => {
-                    console.log("Error inserting data: ", error);
-                  }
+          db.transaction((tx) => {
+            tx.executeSql(
+              "SELECT COUNT(*) as count FROM words;",
+              [],
+              (tx, result) => {
+                const count = result.rows.item(0).count;
+                setWordCount(count);
+              },
+              (error) => {
+                console.log(
+                  "Error while fetching word count from SQLite:",
+                  error
                 );
-              });
-            });
-
-            setCards(apiData);
-            const wordCountRight = apiData.filter(
-              (word) => word.tag === "right"
-            ).length;
-            setWordCountWithTagRight(wordCountRight);
-
-            setDataLoaded(true); // Move this inside the if statement
-          } else {
-            setDataSource("SQLite");
-            db.transaction((tx) => {
-              tx.executeSql(
-                "SELECT COUNT(*) as count FROM words WHERE tag = 'right';",
-                [],
-                (tx, result) => {
-                  const countRight = result.rows.item(0).count;
-                  setWordCountWithTagRight(countRight);
-                },
-                (error) => {
-                  console.log(
-                    "Ошибка при получении количества слов с тегом 'right' из SQLite:",
-                    error
-                  );
-                }
-              );
-            });
-            db.transaction((tx) => {
-              tx.executeSql(
-                "SELECT * FROM words WHERE count <= 3 ORDER BY RANDOM();",
-                [],
-                (tx, result) => {
-                  const len = result.rows.length;
-                  const data = [];
-                  for (let i = 0; i < len; i++) {
-                    const row = result.rows.item(i);
-                    data.push({
-                      id: row.id,
-                      word: row.word,
-                      translation: row.translation,
-                      tag: row.tag,
-                      count: row.count,
-                    });
-                  }
-                  const shuffledData = data.sort(() => Math.random() - 0.5);
-
-                  setCards(shuffledData);
-                  console.log(shuffledData);
-
-                  setLoading(false);
-                }
-              );
-            });
-
-            db.transaction((tx) => {
-              tx.executeSql(
-                "SELECT COUNT(*) as count FROM words;",
-                [],
-                (tx, result) => {
-                  const count = result.rows.item(0).count;
-                  setWordCount(count);
-                },
-                (error) => {
-                  console.log(
-                    "Error while fetching word count from SQLite:",
-                    error
-                  );
-                }
-              );
-            });
-          }
-        });
-
-        if (count === 0 && netInfoState.isConnected) {
-          // ... остальной код
-
-          setCards(apiData);
-
-          // Сохраняем ID последней карточки в AsyncStorage
-          if (apiData.length > 0) {
-            await AsyncStorage.setItem(
-              "lastCardId",
-              apiData[apiData.length - 1].id.toString()
+              }
             );
-          }
-        } else {
-          setDataSource("SQLite");
-
-          // ... остальной код
+          });
         }
+      });
 
-        setTimeout(() => {
-          setShowNoMoreCards(true);
-        }, 30000);
+      if (count === 0 && netInfoState.isConnected) {
 
-        setLoading(false);
-        const storedLastCardId = await AsyncStorage.getItem("lastCardId");
+        setCards(apiData);
 
-        if (storedLastCardId) {
-          setLastVisitedCardId(parseInt(storedLastCardId, 10));
+        if (apiData.length > 0) {
+          await AsyncStorage.setItem(
+            "lastCardId",
+            apiData[apiData.length - 1].id.toString()
+          );
         }
-        setDataLoaded(true); // Установите флаг, когда данные загружены
-      } catch (error) {
-        console.error("Ошибка:", error);
+      } else {
+        setDataSource("SQLite");
+
+      
       }
-    };
+
+      setTimeout(() => {
+        setShowNoMoreCards(true);
+      }, 30000);
+
+      setLoading(false);
+      const storedLastCardId = await AsyncStorage.getItem("lastCardId");
+
+      if (storedLastCardId) {
+        setLastVisitedCardId(parseInt(storedLastCardId, 10));
+      }
+      setDataLoaded(true); 
+    } catch (error) {
+      console.error("Ошибка:", error);
+    }
+  };
 
   //   fetchAndSetData();
   // }, []);
 
-  useEffect(() =>{
+  useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql(
         "SELECT COUNT(*) as count FROM words WHERE tag = 'right';",
@@ -276,13 +284,12 @@ console.log('startButtonValue ',startButtonValue);
         },
         (error) => {
           console.log(
-            "Ошибка при получении количества слов с тегом 'right' из SQLite:",
             error
           );
         }
       );
     });
-  },);
+  });
 
   useEffect(() => {
     db.transaction((tx) => {
@@ -319,7 +326,7 @@ console.log('startButtonValue ',startButtonValue);
             "UPDATE words SET tag = 'right', count = ? WHERE id = ?;",
             [currentCount + 1, card.id],
             (tx, result) => {
-              updateProgress(); // Added to update progress after each swipe
+              updateProgress(); 
             },
             (error) => {
               console.log("Error updating tag and count:", error);
@@ -348,7 +355,7 @@ console.log('startButtonValue ',startButtonValue);
             "UPDATE words SET tag = 'left', count = ? WHERE id = ?;",
             [currentCount + 1, card.id],
             (tx, result) => {
-              updateProgress(); // Added to update progress after each swipe
+              updateProgress(); 
             },
             (error) => {
               console.log("Error updating tag and count:", error);
@@ -370,6 +377,7 @@ console.log('startButtonValue ',startButtonValue);
         (tx, result) => {
           const countWithTagRight3 = result.rows.item(0).count;
           setCountWithTagRight3(countWithTagRight3);
+          updateSwipedRightCount(countWithTagRight3);
         },
         (error) => {
           console.log("Error updating progress:", error);
@@ -386,6 +394,7 @@ console.log('startButtonValue ',startButtonValue);
         (tx, result) => {
           const countWithTagRight3 = result.rows.item(0).count;
           setCountWithTagRight3(countWithTagRight3);
+          // updateSwipedRightCount( countWithTagRight3);
         },
         (error) => {
           console.log("Error updating progress:", error);
@@ -395,12 +404,10 @@ console.log('startButtonValue ',startButtonValue);
   }, [swipedRightCount, swipedLeftCount]);
 
   const handleAddWord = (word, translation) => {
-    // Add a new word to the SQLite database
     db.transaction((tx) => {
-      // Inside the transaction where you insert new data
       tx.executeSql(
         "INSERT INTO words (word, translation, tag, count) VALUES (?, ?, ?, ?);",
-        [word, translation, "", 0], // Initialize tag as an empty string and count as 0
+        [word, translation, "", 0], 
         (tx, result) => {
           // console.log("Data inserted successfully:", word, translation, tag, count);
         },
@@ -416,18 +423,17 @@ console.log('startButtonValue ',startButtonValue);
 
   const restartApp = async () => {
     try {
-      // Clear the SQLite table
       db.transaction((tx) => {
         tx.executeSql("DELETE FROM words;", [], (tx, result) => {
           console.log("Table cleared successfully.");
         });
       });
 
-      // Fetch data from the API
       const apiData = await fetchDataFromAPI();
 
-      // Insert new data into the SQLite table
-      apiData.forEach(({ word, translation }) => {
+      const shuffledData = apiData.sort(() => Math.random() - 0.5);
+
+      shuffledData.forEach(({ word, translation }) => {
         db.transaction((tx) => {
           tx.executeSql(
             "INSERT INTO words (word, translation, tag, count) VALUES (?, ?, ?, ?);",
@@ -442,8 +448,8 @@ console.log('startButtonValue ',startButtonValue);
         });
       });
 
-      // Update state and reset other necessary values
-      setCards(apiData);
+      setCards(shuffledData);
+
       setWordCountWithTagRight(0);
       setSwipedRightCount(0);
       setSwipedLeftCount(0);
@@ -452,8 +458,9 @@ console.log('startButtonValue ',startButtonValue);
       setShowNoMoreCards(false);
       setCountGreaterThanThree(0);
       setCountWithTagRight3(0);
+      updateSwipedRightCount(0);
+      fetchAndSetData();
 
-      // Save the ID of the last card to AsyncStorage
       if (apiData.length > 0) {
         await AsyncStorage.setItem(
           "lastCardId",
@@ -465,14 +472,11 @@ console.log('startButtonValue ',startButtonValue);
     }
   };
 
-
-
-
-
+ 
 
   return (
     <View style={styles.container}>
-      {loading ? (
+            {loading ? (
         <Image
           source={require("../assets/loading.gif")}
           style={{
@@ -483,27 +487,37 @@ console.log('startButtonValue ',startButtonValue);
           }}
         />
       ) : (
-        
         <>
           <View style={styles.containerProgress}>
             <RadialProgress
               value={Math.round((countWithTagRight3 / wordCount) * 100)}
             />
           </View>
+          {Math.round((countWithTagRight3 / wordCount) * 100) < 100 ? (
+            <SwipeCards
+              cards={cards}
+              loop={true}
+              renderCard={(cardData) => <Card {...cardData} />}
+              handleYup={handleYup}
+              handleNope={handleNope}
+              hasMaybeAction={false}
+              renderNoMoreCards={() =>
+                showNoMoreCards ? <NoMoreCards /> : null
+              }
+              initialCardIndex={
+                lastVisitedCardId
+                  ? cards.findIndex((card) => card.id === lastVisitedCardId)
+                  : 0
+              }
+            />
+          ) : (
+            showView && <Fireworks />
+          )}
 
-          <SwipeCards
-            cards={cards}
-            renderCard={(cardData) => <Card {...cardData} />}
-            handleYup={handleYup}
-            handleNope={handleNope}
-            hasMaybeAction={false}
-            renderNoMoreCards={() => (showNoMoreCards ? <NoMoreCards /> : null)}
-            initialCardIndex={
-              lastVisitedCardId
-                ? cards.findIndex((card) => card.id === lastVisitedCardId)
-                : 0
-            }
-          />
+          {/* {(Math.round((countWithTagRight3 / wordCount) * 100) === 100  && (
+            <Fireworks />
+            )
+          )} */}
 
           <View style={styles.buttonContainer}>
             <View>
@@ -519,78 +533,68 @@ console.log('startButtonValue ',startButtonValue);
             </View>
 
             <View>
-              <Pressable
-                style={[styles.button]}
-                underlayColor="#c4661f"
-                onPress={() => setShowForm(true)}
-              >
-                <AddForm
-                  visible={showForm}
-                  onClose={() => setShowForm(false)}
-                  onAddWord={handleAddWord}
-                />
+              {Math.round((countWithTagRight3 / wordCount) * 100) != 100 && (
+                <Pressable
+                  style={[styles.button]}
+                  underlayColor="#c4661f"
+                  onPress={() => setShowForm(true)}
+                >
+                  <AddForm
+                    visible={showForm}
+                    onClose={() => setShowForm(false)}
+                    onAddWord={handleAddWord}
+                  />
 
-                <View>
-                  <Text style={[styles.buttonText]}>
-                    <Add name="add" size={40} />
-                  </Text>
-                </View>
-              </Pressable>
+                  <View>
+                    <Text style={[styles.buttonText]}>
+                      <Add name="add" size={40} />
+                    </Text>
+                  </View>
+                </Pressable>
+              )}
             </View>
           </View>
 
           {/* )}  */}
 
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={showConfirmationModal}
-            onRequestClose={() => setShowConfirmationModal(false)}
+         
+          {/* 
+<Pressable
+            underlayColor="#c4661f"
+            style={styles.button}
+          
+            onPress={openSetting}
+
+
+
           >
-            <View style={styles.overlay}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalText}>
-                  Are you sure you want to restart?
-                </Text>
-                <Pressable
-                  style={[styles.button, styles.modalButton]}
-                  onPress={() => {
-                    setShowConfirmationModal(false);
-                    restartApp();
-                  }}
-                >
-                  <Text style={[styles.buttonText]}>Yes</Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.button, styles.modalButton]}
-                  onPress={() => setShowConfirmationModal(false)}
-                >
-                  <Text style={[styles.buttonText]}>No</Text>
-                </Pressable>
-              </View>
-            </View>
-          </Modal>
+            <Text >
+fd            </Text>
+          </Pressable> */}
+
+          <ModalRestart
+            isVisible={showConfirmationModal}
+            onClose={() => setShowConfirmationModal(false)}
+            onRestart={restartApp}
+          />
         </>
-       )} 
-       <View>
-       {loading && showView && (
-  <Pressable
-    style={[styles.button]}
-    underlayColor="#c4661f"
-    onPress={async () => {
-      await AsyncStorage.setItem("startButton", "1");
-      setShowStartButton(false);
-      restartApp();
-      fetchAndSetData();
-    }}
-  >
-    <Text style={[styles.buttonText]}>Start</Text>
-  </Pressable>
-)}
-
-
-</View>
-      
+      )}
+      <View>
+        {loading && showView && (
+          <Pressable
+            style={[styles.button]}
+            underlayColor="#c4661f"
+            onPress={async () => {
+              await AsyncStorage.setItem("startButton", "1");
+              setShowStartButton(false);
+              restartApp();
+              fetchAndSetData();
+            }}
+          >
+            <Text style={[styles.buttonText]}>Start</Text>
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 };

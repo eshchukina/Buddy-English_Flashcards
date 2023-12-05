@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 const NoMoreCards = () => {
   return (
     <View>
-      <Text style={styles.noMoreCardsText}>jbhj</Text>
+      <Text style={styles.noMoreCardsText}>No more cards</Text>
     </View>
   );
 };

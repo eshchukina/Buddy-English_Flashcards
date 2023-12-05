@@ -34,7 +34,7 @@ const Info = ({ setSelectedComponent }) => {
 
       <View style={styles.userInfo}>
         <Text style={styles.text}>
-          The app contains 3,000 flashcards with English words or phrases that
+          The app contains 1,000 flashcards with English words or phrases that
           users can learn from.
         </Text>
 

@@ -106,7 +106,7 @@ export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
                   color: "#a9b388",
                 },
                 isPressed && {
-                  color: "#f9ebc7",
+                  color: "#c4661f",
                 },
               ]}
             >
@@ -131,7 +131,7 @@ export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
                   color: "#a9b388",
                 },
                 isPressed1 && {
-                  color: "#f9ebc7",
+                  color: "#c4661f",
                 },
               ]}
             >
