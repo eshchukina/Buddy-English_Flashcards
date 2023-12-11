@@ -15,7 +15,11 @@ const ModalRestart = ({ isVisible, onClose, onRestart }) => {
             Are you sure you want to restart?
           </Text>
           <Pressable
-            style={[styles.button, styles.modalButton]}
+            style={({ pressed }) => [
+              styles.button,
+              styles.modalButton,
+              { backgroundColor: pressed ? "#c4661f" : "#6c526f" },
+            ]}
             onPress={() => {
               onClose();
               onRestart();
@@ -24,7 +28,11 @@ const ModalRestart = ({ isVisible, onClose, onRestart }) => {
             <Text style={[styles.buttonText]}>Yes</Text>
           </Pressable>
           <Pressable
-            style={[styles.button, styles.modalButton]}
+            style={({ pressed }) => [
+              styles.button,
+              styles.modalButton,
+              { backgroundColor: pressed ? "#c4661f" : "#6c526f" },
+            ]}
             onPress={onClose}
           >
             <Text style={[styles.buttonText]}>No</Text>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView, Button } from "react-native";
-import * as SplashScreen from "expo-splash-screen"; //
+import * as SplashScreen from "expo-splash-screen";
 import Footer from "./components/Footer";
 import PersonalCabinet from "./components/PersonalCabinet";
 import Header from "./components/Header";
@@ -85,7 +85,7 @@ export default function App() {
             <FlashcardDeck
               setSelectedComponent={setSelectedComponent}
               updateSwipedRightCount={updateSwipedRightCount}
-                          setIsPersonalCabinetOpen={setIsPersonalCabinetOpen}
+              setIsPersonalCabinetOpen={setIsPersonalCabinetOpen}
             />
             <Footer setSelectedComponent={setSelectedComponent} />
           </>
@@ -105,22 +105,18 @@ export default function App() {
             <Info setSelectedComponent={setSelectedComponent} />
             <Footer setSelectedComponent={setSelectedComponent} />
           </>
-        ) :
-        
-        selectedComponent === "setting" ? (
+        ) : selectedComponent === "setting" ? (
           <>
-            <SettingsComponent setSelectedComponent={setSelectedComponent} 
-                          setIsPersonalCabinetOpen={setIsPersonalCabinetOpen}
-                          />
+            <SettingsComponent
+              setSelectedComponent={setSelectedComponent}
+              setIsPersonalCabinetOpen={setIsPersonalCabinetOpen}
+            />
             <Footer
               setSelectedComponent={setSelectedComponent}
               isPersonalCabinetOpen={isPersonalCabinetOpen}
-            />        
-              </>
-        ) :
-        
-        
-        null}
+            />
+          </>
+        ) : null}
 
         <StatusBar style="auto" />
         <Toast />
@@ -129,8 +125,6 @@ export default function App() {
   } else {
     return null;
   }
-  
-
 }
 const styles = StyleSheet.create({
   container: {

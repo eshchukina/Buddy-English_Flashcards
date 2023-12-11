@@ -1,15 +1,30 @@
 import React, { useState, useRef, useEffect } from "react";
-import { StyleSheet, Text, View, Animated, Pressable } from "react-native";
+import { StyleSheet, Text, View, Animated, Pressable, Button  } from "react-native";
 import Star from "react-native-vector-icons/Ionicons";
 import StarHalf from "react-native-vector-icons/Ionicons";
 import StarOutline from "react-native-vector-icons/Ionicons";
 
+import Sound from "react-native-vector-icons/AntDesign";
+
+import * as Speech from 'expo-speech';
+
 const Card = ({ word, translation, count }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  
   const frontOpacity = useRef(new Animated.Value(0)).current;
   const backOpacity = useRef(new Animated.Value(0)).current;
 
+  const speak = () => {
+    
+    console.log('Speak function called');
+
+    const thingToSay = word;
+    Speech.speak(thingToSay);
+
+  };
+
   const flipCard = () => {
+
     const newIsFlipped = !isFlipped;
 
     const animations = [
@@ -31,6 +46,7 @@ const Card = ({ word, translation, count }) => {
   };
 
   const frontAnimatedStyle = {
+    
     transform: [
       {
         rotateY: frontOpacity.interpolate({
@@ -69,23 +85,43 @@ const Card = ({ word, translation, count }) => {
   return (
     <Pressable style={styles.cardContainer} onPress={flipCard}>
       <View style={styles.flashcard}>
+      
+   
         <Animated.View style={[styles.card, frontAnimatedStyle]}>
+
           <Text style={styles.cardStar}>{renderStar()}</Text>
+          
           <Text style={styles.cardText}>{word}</Text>
+  
+        
         </Animated.View>
+
+        
         <Animated.View
           style={[styles.card, styles.cardBack, backAnimatedStyle]}
         >
           <Text style={styles.cardStar}>{renderStar()}</Text>
           <Text style={styles.cardText}>{translation}</Text>
+
         </Animated.View>
+        
       </View>
+      <Pressable style={styles.soundContainer} title="Press to hear some words" 
+          
+          onPress={speak}
+           >
+        <Text style={styles.soundButton}>
+        <Sound name="sound" size={40} />
+
+        </Text>
+      </Pressable>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   flashcard: {
+    marginTop:50,
     width: 300,
     height: 200,
     perspective: 1000,
@@ -113,6 +149,21 @@ const styles = StyleSheet.create({
     borderColor: "#a9b388",
     borderWidth: 5,
   },
+  soundButton:{
+  color: "#a9b388",
+  
+
+  },
+  soundContainer:{
+    padding:10,
+   
+  zIndex:100,
+    
+
+  },
+  soundWrapper:{
+    
+  },
   cardText: {
     fontSize: 35,
     color: "#fefae0",
@@ -122,7 +173,6 @@ const styles = StyleSheet.create({
   cardContainer: {
     textAlign: "center",
     justifyContent: "center",
-    backgroundColor: "#fefae0",
     alignItems: "center",
     position: "relative",
     top: 60,

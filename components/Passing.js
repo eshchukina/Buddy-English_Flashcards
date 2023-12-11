@@ -4,8 +4,10 @@ import * as Animatable from "react-native-animatable";
 import Medal from "react-native-vector-icons/FontAwesome5";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+
 const Passing = ({ radialProgressPercentage }) => {
   const [storedPercentage, setStoredPercentage] = useState(null);
+  
 
   useEffect(() => {
     const loadPercentage = async () => {
@@ -47,7 +49,7 @@ const Passing = ({ radialProgressPercentage }) => {
       return {
         color: "#cd7f32",
         dispaly: "none",
-        text: "Soon, get started. Good luck!",
+        text: "Let's get started. Good luck!",
       };
     }
   };

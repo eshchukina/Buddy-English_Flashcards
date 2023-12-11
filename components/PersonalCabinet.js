@@ -292,7 +292,6 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: "vidaloka",
     fontSize: 24,
-    fontWeight: "bold",
     marginBottom: 20,
     color: "#c4661f",
   },

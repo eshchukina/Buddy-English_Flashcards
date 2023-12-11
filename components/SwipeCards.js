@@ -521,10 +521,15 @@ const SwipeCard = ({
 
           <View style={styles.buttonContainer}>
             <View>
-              <Pressable
-                style={[styles.button]}
-                underlayColor="#c4661f"
-                onPress={() => setShowConfirmationModal(true)}
+            <Pressable
+              underlayColor="#c4661f"
+ style={({ pressed }) => [
+          {
+            backgroundColor: pressed ? '#c4661f' : '#6c526f', // Change background color on press
+           
+          },
+          styles.button ]}
+                   onPress={() => setShowConfirmationModal(true)}
               >
                 <Text style={[styles.buttonText]}>
                   <Reload name="reload1" size={40} />
@@ -534,9 +539,14 @@ const SwipeCard = ({
 
             <View>
               {Math.round((countWithTagRight3 / wordCount) * 100) != 100 && (
-                <Pressable
-                  style={[styles.button]}
-                  underlayColor="#c4661f"
+                 <Pressable
+                 underlayColor="#c4661f"
+    style={({ pressed }) => [
+             {
+               backgroundColor: pressed ? '#c4661f' : '#6c526f', // Change background color on press
+              
+             },
+             styles.button ]}
                   onPress={() => setShowForm(true)}
                 >
                   <AddForm
@@ -591,7 +601,7 @@ fd            </Text>
               fetchAndSetData();
             }}
           >
-            <Text style={[styles.buttonText]}>Start</Text>
+            <Text style={[styles.buttonText]}>start</Text>
           </Pressable>
         )}
       </View>
@@ -613,7 +623,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   button: {
-    backgroundColor: "#6c526f",
+    // backgroundColor: "#6c526f",
     borderRadius: 15,
     margin: 10,
     padding: 15,
@@ -625,6 +635,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#a9b388",
+    fontFamily: "vidaloka",
+
   },
 
   containerProgress: {

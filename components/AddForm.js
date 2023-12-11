@@ -174,11 +174,14 @@ const styles = StyleSheet.create({
   },
   modalText: {
     fontSize: 16,
-    fontWeight: "bold",
     color: "#756685",
     alignItems: "center",
+    fontFamily: "vidaloka",
+
   },
   titleText: {
+    
+
     textAlign: "center",
     marginTop: 10,
     marginBottom: 5,

@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   text: {
     color: "#783d19",
     fontFamily: "vidaloka",
-    padding: 10,
+    padding: 5,
     fontSize: 18,
   },
   textContainer: {

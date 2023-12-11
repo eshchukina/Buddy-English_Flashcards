@@ -23,7 +23,9 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#fefae0"
       },
-      "package": "com.frankkat.FlashCards"
+      "package": "com.frankkat.FlashCards",
+      "scheme": "flashcards" 
+
     },
     "web": {
       "favicon": "./assets/icon.png"

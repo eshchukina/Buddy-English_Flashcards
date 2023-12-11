@@ -34,32 +34,25 @@ const Info = ({ setSelectedComponent }) => {
 
       <View style={styles.userInfo}>
         <Text style={styles.text}>
-          The app contains 1,000 flashcards with English words or phrases that
-          users can learn from.
+        Embark on a language-learning journey with our app designed to 
+        teach you the 1000 most commonly used English words. Immerse yourself in an interactive experience where you 
+          not only learn the words but also their translations.
         </Text>
 
         <Text style={styles.text}>
-          {" "}
-          When users click on a card, it flips, revealing the Russian
-          translation. This helps users understand the meaning of the word or
-          phrase.
+        The learning process involves a dynamic swipe mechanism – swipe right if you've 
+        mastered the word, and left if you're still working on it.
         </Text>
 
         <Text style={styles.text}>
-          Cards that users have memorized and wish to review later can be swiped
-          to the right. This helps users filter words they need to revisit.
+        Your ultimate goal is to achieve a perfect 100% mastery of the vocabulary. 
+        Track your progress and strive to elevate your rating to the highest possible mark. The app provides a user-friendly
+         interface, making the learning process engaging and effective.
         </Text>
 
         <Text style={styles.text}>
-          The app allows users to track their progress in learning words and
-          phrases. They can see how many cards they've learned, how many are
-          remaining, and their overall progress.
-        </Text>
-
-        <Text style={styles.text}>
-          Categorization of Cards: Cards can be organized into different
-          categories or topics so that users can learn specific words or phrases
-          relevant to their interests or needs.
+        Reinforce your English language skills, broaden your vocabulary, and witness your proficiency soar as you work towards achieving the top rating. 
+        Download now and embark on a transformative language-learning adventure!
         </Text>
       </View>
     </ScrollView>
