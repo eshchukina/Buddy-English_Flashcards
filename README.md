@@ -1,8 +1,7 @@
 Buddy-English_Flashcards react native
 
-   Embark on a language-learning journey with our app designed to teach you the 1000 most commonly used English words. Immerse yourself in an interactive experience where you not only learn the words but also their translations.
-    The learning process involves a dynamic swipe mechanism – swipe right if you've mastered the word, and left if you're still working on it.
-     Your ultimate goal is to achieve a perfect 100% mastery of the vocabulary. Track your progress and strive to elevate your rating to the highest possible mark. The app provides a user-friendly interface, making the learning process engaging and effective.
+ 
+Embark on a language-learning journey with our app designed to teach you the 1000 most commonly used English words through an innovative flashcard system. Immerse yourself in an interactive experience where you not only learn the words but also their translations. The learning process involves a dynamic swipe mechanism – swipe right if you've mastered the word, and left if you're still working on it. Your ultimate goal is to achieve a perfect 100% mastery of the vocabulary. Track your progress and strive to elevate your rating to the highest possible mark. The app, featuring flashcards with English words and their Russian translations, provides a user-friendly interface, making the learning process engaging and effective.
  
 
 
