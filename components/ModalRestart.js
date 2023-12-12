@@ -12,7 +12,7 @@ const ModalRestart = ({ isVisible, onClose, onRestart }) => {
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalText}>
-            Are you sure you want to restart?
+            are you sure you want to restart?
           </Text>
           <Pressable
             style={({ pressed }) => [
@@ -25,7 +25,7 @@ const ModalRestart = ({ isVisible, onClose, onRestart }) => {
               onRestart();
             }}
           >
-            <Text style={[styles.buttonText]}>Yes</Text>
+            <Text style={[styles.buttonText]}>yes</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [
@@ -35,7 +35,7 @@ const ModalRestart = ({ isVisible, onClose, onRestart }) => {
             ]}
             onPress={onClose}
           >
-            <Text style={[styles.buttonText]}>No</Text>
+            <Text style={[styles.buttonText]}>no</Text>
           </Pressable>
         </View>
       </View>

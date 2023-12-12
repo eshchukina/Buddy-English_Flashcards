@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#6c526f",
     position: "absolute",
-    top: 90,
+    top: 50,
     zIndex: 2,
     margin: 10,
   },

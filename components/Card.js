@@ -1,9 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { StyleSheet, Text, View, Animated, Pressable, Button  } from "react-native";
+import { Dimensions } from 'react-native';
+
 import Star from "react-native-vector-icons/Ionicons";
 import StarHalf from "react-native-vector-icons/Ionicons";
 import StarOutline from "react-native-vector-icons/Ionicons";
-
+import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
+const { width: screenWidth } = Dimensions.get('window');
+const isSmallScreen = screenWidth < 375;
 import Sound from "react-native-vector-icons/AntDesign";
 
 import * as Speech from 'expo-speech';
@@ -121,13 +125,13 @@ const Card = ({ word, translation, count }) => {
 
 const styles = StyleSheet.create({
   flashcard: {
-    marginTop:50,
-    width: 300,
-    height: 200,
+    marginTop: isSmallScreen ? heightPercentageToDP('20%') : 50,
+    width: isSmallScreen ? widthPercentageToDP('60%') : 300, // Adjust as needed
+    height: isSmallScreen ? heightPercentageToDP('25%') : 200, // Adjust as needed
     perspective: 1000,
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
   },
   card: {
     width: "100%",
@@ -165,17 +169,18 @@ const styles = StyleSheet.create({
     
   },
   cardText: {
-    fontSize: 35,
     color: "#fefae0",
     fontFamily: "vidaloka",
     textAlign: "center",
+    fontSize: isSmallScreen ? heightPercentageToDP("5%") : 35,
+
   },
   cardContainer: {
     textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    top: 60,
+    top: 70,
   },
   cardStar: {
     marginBottom: 10,

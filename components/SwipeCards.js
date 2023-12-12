@@ -13,7 +13,14 @@ import Fireworks from "./Fireworks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Reload from "react-native-vector-icons/AntDesign";
 import ModalRestart from "./ModalRestart";
-import SettingsComponent from "./SettingsComponent";
+
+import { Dimensions } from 'react-native';
+import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
+
+const { width: screenWidth } = Dimensions.get('window');
+const isSmallScreen = screenWidth < 375;
+
+
 
 const SwipeCard = ({
   setIsPersonalCabinetOpen,
@@ -67,7 +74,7 @@ const SwipeCard = ({
 
   useEffect(() => {
     const startButtonValue = AsyncStorage.getItem("startButton");
-    console.log("startButtonValue ", startButtonValue);
+    // console.log("startButtonValue ", startButtonValue);
     if (startButtonValue && startButtonValue === "0") {
       setShowStartButton(true);
     } else if (startButtonValue && startButtonValue === "1") {
@@ -186,7 +193,7 @@ const SwipeCard = ({
               },
               (error) => {
                 console.log(
-                  "Ошибка при получении количества слов с тегом 'right' из SQLite:",
+                  "Error with 'right' from SQLite:",
                   error
                 );
               }
@@ -212,7 +219,7 @@ const SwipeCard = ({
                 const shuffledData = data.sort(() => Math.random() - 0.5);
 
                 setCards(shuffledData);
-                console.log(shuffledData);
+                // console.log(shuffledData);
 
                 setLoading(false);
               }
@@ -266,7 +273,7 @@ const SwipeCard = ({
       }
       setDataLoaded(true); 
     } catch (error) {
-      console.error("Ошибка:", error);
+      console.error("Error:", error);
     }
   };
 
@@ -425,7 +432,7 @@ const SwipeCard = ({
     try {
       db.transaction((tx) => {
         tx.executeSql("DELETE FROM words;", [], (tx, result) => {
-          console.log("Table cleared successfully.");
+          console.log("Table cleared successfully");
         });
       });
 
@@ -439,7 +446,7 @@ const SwipeCard = ({
             "INSERT INTO words (word, translation, tag, count) VALUES (?, ?, ?, ?);",
             [word, translation, "", 0],
             (tx, result) => {
-              console.log("Data inserted successfully:", word, translation);
+              // console.log("Data inserted successfully:", word, translation);
             },
             (error) => {
               console.log("Error inserting data: ", error);
@@ -475,8 +482,10 @@ const SwipeCard = ({
  
 
   return (
-    <View style={styles.container}>
+
+    <View style={styles.container}> 
             {loading ? (
+             
         <Image
           source={require("../assets/loading.gif")}
           style={{
@@ -497,6 +506,10 @@ const SwipeCard = ({
             <SwipeCards
               cards={cards}
               loop={true}
+              onClickHandler={() => {}}
+              showNope	={false}
+              showMaybe={false}
+              showYup	={false}
               renderCard={(cardData) => <Card {...cardData} />}
               handleYup={handleYup}
               handleNope={handleNope}
@@ -592,8 +605,13 @@ fd            </Text>
       <View>
         {loading && showView && (
           <Pressable
-            style={[styles.button]}
-            underlayColor="#c4661f"
+          style={({ pressed }) => [
+            {
+              backgroundColor: pressed ? '#c4661f' : '#6c526f', // Change background color on press
+             
+            },
+            styles.button ]}
+                        underlayColor="#c4661f"
             onPress={async () => {
               await AsyncStorage.setItem("startButton", "1");
               setShowStartButton(false);
@@ -623,10 +641,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   button: {
-    // backgroundColor: "#6c526f",
+     //backgroundColor: "#6c526f",
     borderRadius: 15,
     margin: 10,
-    padding: 15,
+    padding: isSmallScreen ? heightPercentageToDP('1%') : 15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
@@ -641,7 +659,8 @@ const styles = StyleSheet.create({
 
   containerProgress: {
     position: "absolute",
-    top: 200,
+    top: isSmallScreen ? heightPercentageToDP('30%') : 200,
+
   },
   overlay: {
     flex: 1,
@@ -693,6 +712,43 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#783d19",
   },
+
+  yupStyle: {
+   
+    position: 'absolute',
+    padding: 20,
+    bottom: 20,
+    borderRadius: 5,
+    right: 0,
+  },
+  yupTextStyle: {
+    fontSize: 0,
+    color: 'green',
+  },
+  maybeStyle: {
+    
+    position: 'absolute',
+    padding: 20,
+    bottom: 20,
+    borderRadius: 5,
+    right: 20,
+  },
+  maybeTextStyle: {
+    fontSize: 0,
+    color: 'blue',
+  },
+  nopeStyle: {
+   
+    position: 'absolute',
+    bottom: 20,
+    padding: 20,
+    borderRadius: 5,
+    left: 0,
+  },
+  nopeTextStyle: {
+    fontSize: 0,
+    color: 'red',
+  }
 });
 
 export default SwipeCard;

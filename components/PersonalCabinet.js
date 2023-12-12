@@ -11,7 +11,11 @@ import {
   SafeAreaView,
   Button, // Add this line to import the Image component
 } from "react-native";
+import { Dimensions } from 'react-native';
+import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
 
+const { width: screenWidth } = Dimensions.get('window');
+const isSmallScreen = screenWidth < 375; 
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 import ModalSetting from "./ModalSetting";
@@ -330,8 +334,9 @@ const styles = StyleSheet.create({
   },
 
   userPhotoContainer: {
-    width: 200,
-    height: 200,
+    width: isSmallScreen ? heightPercentageToDP('20%') : 200,
+    height: isSmallScreen ? heightPercentageToDP('20%') : 200,
+
     borderRadius: 100,
     overflow: "hidden",
     marginBottom: 20,
@@ -356,9 +361,9 @@ const styles = StyleSheet.create({
   iconsRow: {
     flexDirection: "row",
     textAlign: "center",
-    marginTop: 100,
+    marginTop: isSmallScreen ? heightPercentageToDP('5%') : 100,
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     flexWrap: "wrap",
   },
   iconText: {

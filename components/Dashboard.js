@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,16 +8,63 @@ import {
   Modal,
   View,
   Button,
+  Animated,
 } from "react-native";
 import Passing from "./Passing";
 import Cards from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/AntDesign";
+import Star from "react-native-vector-icons/Ionicons";
+import StarHalf from "react-native-vector-icons/Ionicons";
+import StarOutline from "react-native-vector-icons/Ionicons";
 
 import IconFooter from "react-native-vector-icons/FontAwesome5";
 export default function Dashboard({ setSelectedComponent }) {
   const [isPressed, setIsPressed] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
+
+  const fadeAnim1 = useRef(new Animated.Value(0)).current;
+  const fadeAnim2 = useRef(new Animated.Value(0)).current;
+  const fadeAnim3 = useRef(new Animated.Value(0)).current;
+
+  const fadeIn = (animatedValue) => {
+    Animated.timing(animatedValue, {
+      toValue: 1,
+      duration: 1000, // Adjust the duration as needed
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const fadeOut = (animatedValue) => {
+    Animated.timing(animatedValue, {
+      toValue: 0,
+      duration: 1000, // Adjust the duration as needed
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const animateImages = () => {
+    fadeIn(fadeAnim1);
+
+    setTimeout(() => {
+      fadeOut(fadeAnim1);
+      fadeIn(fadeAnim2);
+    }, 2000);
+
+    setTimeout(() => {
+      fadeOut(fadeAnim2);
+      fadeIn(fadeAnim3);
+    }, 4000);
+
+    setTimeout(() => {
+      fadeOut(fadeAnim3);
+      setTimeout(animateImages, 1000); // Recursive call for continuous loop
+    }, 6000);
+  };
+
+  useEffect(() => {
+    animateImages();
+  }, [fadeAnim1, fadeAnim2, fadeAnim3]);
 
   useEffect(() => {
     AsyncStorage.getItem("instructionsShown").then((value) => {
@@ -75,10 +122,8 @@ export default function Dashboard({ setSelectedComponent }) {
       <Modal visible={showInstructions} animationType="fade" transparent={true}>
         <View style={styles.overlay}>
           <ScrollView style={styles.modalContent}>
-          <Text style={[styles.textModal, styles.buttonInfo]}>
-             Welcome!
-            </Text>
-              
+            <Text style={[styles.textModal, styles.buttonInfo]}>Welcome!</Text>
+
             <Text style={styles.textModal}>
               Embark on a language-learning journey with our app designed to
               teach you the 1000 most commonly used English words. Immerse
@@ -105,37 +150,40 @@ export default function Dashboard({ setSelectedComponent }) {
               language-learning adventure!
             </Text>
 
-          
-
-           
-
             <Text style={[styles.textModal, styles.buttonInfo]}>
-            Image of a button to go to the page with cards:
+              Image of a button to go to the page with cards:
             </Text>
             <Text style={[styles.textModal, styles.buttonInfo]}>
               <Pressable style={styles.button}>
                 <>
-                  <Text
-                    style={[
-                      styles.buttonText,
-                      isPressed && styles.buttonActiveText,
-                    ]}
-                  >
-                    open cards
-                  </Text>
-                  <Text
-                    style={[
-                      styles.buttonText,
-                      isPressed && styles.buttonActiveText,
-                    ]}
-                  >
+                  <Text style={[styles.buttonText]}>open cards</Text>
+                  <Text style={[styles.buttonText]}>
                     <Cards name="cards" size={40} />
                   </Text>
                 </>
               </Pressable>
             </Text>
+
             <Text style={[styles.textModal, styles.buttonInfo]}>
-            Image of a button to go to the personal account:
+              Swipe the card to the right three times for full memorization of
+              the new word:
+            </Text>
+            <Text style={[styles.textModal, styles.buttonInfo]}>
+              <Animated.View style={{ opacity: fadeAnim1 }}>
+                <StarOutline name="star-outline" size={30} color="#f9d479" />
+              </Animated.View>
+
+              <Animated.View style={{ opacity: fadeAnim2 }}>
+                <StarHalf name="star-half-sharp" size={32} color="#f9d479" />
+              </Animated.View>
+
+              <Animated.View style={{ opacity: fadeAnim3 }}>
+                <Star name="star-sharp" size={32} color="#f9d479" />
+              </Animated.View>
+            </Text>
+
+            <Text style={[styles.textModal, styles.buttonInfo]}>
+              Image of a button to go to the personal account:
             </Text>
             <Text style={[styles.textModal, styles.buttonInfo]}>
               <Pressable underlayColor="#c4661f" style={styles.button2}>
@@ -155,11 +203,11 @@ export default function Dashboard({ setSelectedComponent }) {
                   {
                     color: "#a9b388",
                   },
-                  styles.buttonText
+                  styles.buttonText,
                 ]}
               >
                 {/* <Icon name="close" size={30} /> */}
-              Let's start!
+                Let's start!
               </Text>
             </Pressable>
           </ScrollView>
@@ -196,7 +244,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: "95%",
     textAlign: "center",
-    margin:10,
+    margin: 10,
     borderWidth: 2,
     borderColor: "#5f6f52",
     textAlign: "center",
@@ -256,7 +304,7 @@ const styles = StyleSheet.create({
     color: "#783d19",
     fontFamily: "vidaloka",
     margin: 5,
-    
+
     textAlign: "justify",
   },
   button2: {

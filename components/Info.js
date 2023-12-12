@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 
 import Back from "react-native-vector-icons/AntDesign";
+import Cards from "react-native-vector-icons/MaterialCommunityIcons";
+import Star from "react-native-vector-icons/Ionicons";
+import StarHalf from "react-native-vector-icons/Ionicons";
+import StarOutline from "react-native-vector-icons/Ionicons";
 
+import IconFooter from "react-native-vector-icons/FontAwesome5";
 const Info = ({ setSelectedComponent }) => {
   const [isPressed, setIsPressed] = useState(false);
 
@@ -54,6 +59,8 @@ const Info = ({ setSelectedComponent }) => {
         Reinforce your English language skills, broaden your vocabulary, and witness your proficiency soar as you work towards achieving the top rating. 
         Download now and embark on a transformative language-learning adventure!
         </Text>
+
+
       </View>
     </ScrollView>
   );

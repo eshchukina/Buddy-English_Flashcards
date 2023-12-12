@@ -11,7 +11,12 @@ import {
 
 import Swiper from "react-native-swiper";
 import * as Animatable from "react-native-animatable";
+import { Dimensions } from 'react-native';
 
+import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
+
+const { width: screenWidth } = Dimensions.get('window');
+const isSmallScreen = screenWidth < 375; 
 export default function DownloadPage({ setSelectedComponent }) {
   const [currentPage, setCurrentPage] = useState(0);
   const flatListRef = useRef(null);
@@ -242,7 +247,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   mainTextBox: {
-    marginTop: 100,
+    marginTop: isSmallScreen ? heightPercentageToDP('-10%') : 50,
     textAlign: "center",
     alignItems: "center",
   },
