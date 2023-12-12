@@ -1,26 +1,25 @@
 Buddy-English_Flashcards react native
-(in the app development process, an intermediate version is being presented)
- 
-The app contains  flashcards with English words or phrases that users can learn from. When users click on a card, it flips, revealing the Russian translation. This helps users understand the meaning of the word or phrase. Cards that users have memorized and wish to
-review later can be swiped to the right.
-This helps users filter words they need to revisit. The app allows users to track their progress in learning words and phrases. They can see how many 
-cards they've learned, how many are remaining, and their overall progress.
 
-(in the future it is planned) Categorization of Cards: Cards can be organized into different categories or topics so that users can learn specific words or phrases relevant to their interests or needs.
+ 
+Embark on a language-learning journey with our app designed to teach you the 1000 most commonly used English words through an innovative flashcard system. Immerse yourself in an interactive experience where you not only learn the words but also their translations. The learning process involves a dynamic swipe mechanism – swipe right if you've mastered the word, and left if you're still working on it. Your ultimate goal is to achieve a perfect 100% mastery of the vocabulary. Track your progress and strive to elevate your rating to the highest possible mark. The app, featuring flashcards with English words and their Russian translations, provides a user-friendly interface, making the learning process engaging and effective.
+ 
 
 
 
 ![screenshot 1](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-16.jpg)
 ![screenshot 2](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-13.jpg)
-![screenshot 3](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151147.png)
-![screenshot 4](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151233.png)
-![screenshot 5](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151241.png)
-![screenshot 6](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151254.png)
-![screenshot 7](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151304.png)
-![screenshot 8](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151314.png)
-![screenshot 9](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151326.png)
-![screenshot 10](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151355.png)
-![screenshot 11](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151412.png)
-![screenshot 12](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151533.png)
-![screenshot 13](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151620.png)
-![screenshot 14](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/Screenshot_20231007_151626.png)
+![screenshot 3](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-11.jpg)
+![screenshot 4](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-08.jpg)
+![screenshot 5](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-43.jpg)
+![screenshot 6](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-29.jpg)
+![screenshot 7](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-27.jpg)
+![screenshot 8](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-21.jpg)
+![screenshot 9](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-06.jpg)
+![screenshot 10](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-40.jpg)
+![screenshot 11](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-38.jpg)
+![screenshot 12](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-34.jpg)
+![screenshot 13](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-31.jpg)
+![screenshot 14](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-24.jpg)
+![screenshot 15](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-18.jpg)
+![screenshot 16](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-04.jpg)
+![screenshot 17](https://github.com/eshchukina/Buddy-English_Flashcards/blob/main/screenshot/photo_2023-12-11_19-36-01.jpg)
