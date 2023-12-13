@@ -161,7 +161,7 @@ export default function DownloadPage({ setSelectedComponent }) {
             </Pressable>
           )}
 
-          {currentPage === 1 || currentPage === 2 || currentPage === 3 ? (
+          {currentPage ===0 || currentPage === 1 || currentPage === 2 || currentPage === 3 ? (
             <Pressable
               style={styles.button}
               underlayColor="#c4661f"

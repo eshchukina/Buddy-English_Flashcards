@@ -222,7 +222,7 @@ const PersonalCabinet = ({
             </Pressable>
           </View>
           <View>
-            <Text style={styles.heading}>Personal Cabinet</Text>
+            {/* <Text style={styles.heading}>Personal Cabinet</Text> */}
             <View style={styles.userInfo}>
               <Home />
             </View>

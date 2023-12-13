@@ -10,12 +10,16 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import * as SQLite from "expo-sqlite";
+import * as Validation from "./Validation";
+
 
 export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
   const [isPressed, setIsPressed] = useState(false);
   const [isPressed1, setIsPressed1] = useState(false);
   const [word, setWord] = useState("");
   const [translation, setTranslation] = useState("");
+  const [wordError, setWordError] = useState("");
+
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -39,8 +43,7 @@ export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
   };
 
   const handleCreateWord = () => {
-    if (word.trim() === "" || translation.trim() === "") {
-      console.log("Word and translation cannot be empty.");
+    if (!Validation.isWordAndTranslationValid(word, translation)) {
       return;
     }
 
@@ -48,12 +51,24 @@ export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
     onClose();
   };
 
+  const handleWordChange = (text) => {
+    setWord(text);
+    if (text.length > 30) {
+      setWordError("Word should not exceed 30 characters");
+    } else {
+      setWordError("");
+    }
+  };
+  
+  
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
       <View style={styles.overlay}>
+        
         <TouchableWithoutFeedback onPress={onClose}>
           <View style={styles.overlayContent}></View>
         </TouchableWithoutFeedback>
+        
         <View
           style={[styles.modalContent, isDarkMode ? styles.dark : styles.light]}
         >
@@ -77,6 +92,7 @@ export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
             value={word}
             onChangeText={(text) => setWord(text)}
           />
+          
           <View style={styles.passwordInputContainer}>
             <TextInput
               style={[
@@ -89,7 +105,8 @@ export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
               onChangeText={(text) => setTranslation(text)}
             />
           </View>
-
+        
+        
           <Pressable
             style={[
               styles.button,
@@ -137,6 +154,7 @@ export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
             >
               <Icon name="close" size={30} />
             </Text>
+            
           </Pressable>
         </View>
       </View>
@@ -173,20 +191,21 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   modalText: {
-    fontSize: 16,
-    color: "#756685",
     alignItems: "center",
     fontFamily: "vidaloka",
 
   },
   titleText: {
-    
-
+  
     textAlign: "center",
-    marginTop: 10,
-    marginBottom: 5,
     fontFamily: "vidaloka",
-  },
+    padding: 10,
+    fontSize: 18,
+
+    color: "#6c526f",
+    textAlign: "center",
+    marginTop: 15,
+},
   input: {
     borderColor: "#5f6f52",
     borderWidth: 1,

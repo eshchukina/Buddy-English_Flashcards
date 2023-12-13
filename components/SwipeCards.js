@@ -483,6 +483,7 @@ const SwipeCard = ({
 
   return (
 
+
     <View style={styles.container}> 
             {loading ? (
              

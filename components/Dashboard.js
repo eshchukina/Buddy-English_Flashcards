@@ -10,6 +10,8 @@ import {
   Button,
   Animated,
 } from "react-native";
+
+
 import Passing from "./Passing";
 import Cards from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -122,7 +124,8 @@ export default function Dashboard({ setSelectedComponent }) {
       <Modal visible={showInstructions} animationType="fade" transparent={true}>
         <View style={styles.overlay}>
           <ScrollView style={styles.modalContent}>
-            <Text style={[styles.textModal, styles.buttonInfo]}>Welcome!</Text>
+            
+             <Text style={[styles.textModal, styles.buttonInfo]}>Welcome!</Text> 
 
             <Text style={styles.textModal}>
               Embark on a language-learning journey with our app designed to
