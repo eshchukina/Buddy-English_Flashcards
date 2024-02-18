@@ -1,76 +1,89 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Image, Text, Pressable, Modal } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { View, StyleSheet, Image, Text, Pressable, Animated } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 import * as SQLite from "expo-sqlite";
 import SwipeCards from "react-native-swipe-cards";
 import NoMoreCards from "./NoMoreCards";
-import AddForm from "./AddForm";
+import AddForm from "./ModalWindow/AddForm";
 import Card from "./Card";
 import RadialProgress from "./RadialProgress";
+
+import Star from "react-native-vector-icons/Ionicons";
+import StarHalf from "react-native-vector-icons/Ionicons";
+import StarOutline from "react-native-vector-icons/Ionicons";
 
 import Add from "react-native-vector-icons/MaterialIcons";
 import Fireworks from "./Fireworks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Reload from "react-native-vector-icons/AntDesign";
-import ModalRestart from "./ModalRestart";
+import ModalRestart from "./ModalWindow/ModalRestart";
 
-import { Dimensions } from 'react-native';
-import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
+import { Dimensions } from "react-native";
+import { heightPercentageToDP } from "react-native-responsive-screen";
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth } = Dimensions.get("window");
 const isSmallScreen = screenWidth < 375;
 
-
-
-const SwipeCard = ({
-  setIsPersonalCabinetOpen,
-  updateSwipedRightCount,
-  onRadialProgressChange,
-  setSelectedComponent,
-}) => {
+const SwipeCard = ({ updateSwipedRightCount }) => {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isOnline, setIsOnline] = useState(true);
-  const [dataSource, setDataSource] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [swipedRightCount, setSwipedRightCount] = useState(0);
   const [swipedLeftCount, setSwipedLeftCount] = useState(0);
-  const [currentCardId, setCurrentCardId] = useState(null);
   const [showNoMoreCards, setShowNoMoreCards] = useState(false);
-  const [lastVisitedCardId, setLastVisitedCardId] = useState(null);
-
-  const [wordCountWithTagRight, setWordCountWithTagRight] = useState(0);
-
-  const [countGreaterThanThree, setCountGreaterThanThree] = useState(0);
 
   const [countWithTagRight3, setCountWithTagRight3] = useState(0);
 
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showStartButton, setShowStartButton] = useState(false);
   const [dataLoaded, setDataLoaded] = useState(false);
 
-  const [showStartButton, setShowStartButton] = useState(false);
   const [showView, setShowView] = useState(false);
 
-  const [isVisible, setIsVisible] = useState(true);
 
-  useEffect(() => {
-    const visibilityDuration = 5000; 
+  const fadeAnim1 = useRef(new Animated.Value(0)).current;
+  const fadeAnim2 = useRef(new Animated.Value(0)).current;
+  const fadeAnim3 = useRef(new Animated.Value(0)).current;
 
-    const timeoutId = setTimeout(() => {
-      setIsVisible(false);
-    }, visibilityDuration);
+  const fadeIn = (animatedValue) => {
+    Animated.timing(animatedValue, {
+      toValue: 1,
+      duration: 1000, 
+      useNativeDriver: false,
+    }).start();
+  };
 
-    return () => clearTimeout(timeoutId);
-  }, []);
+  const fadeOut = (animatedValue) => {
+    Animated.timing(animatedValue, {
+      toValue: 0,
+      duration: 1000, 
+      useNativeDriver: false,
+    }).start();
+  };
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setShowView(true);
+  const animateImages = () => {
+    fadeIn(fadeAnim1);
+
+    setTimeout(() => {
+      fadeOut(fadeAnim1);
+      fadeIn(fadeAnim2);
     }, 2000);
 
-    return () => clearTimeout(timeoutId);
-  }, []);
+    setTimeout(() => {
+      fadeOut(fadeAnim2);
+      fadeIn(fadeAnim3);
+    }, 4000);
+
+    setTimeout(() => {
+      fadeOut(fadeAnim3);
+      setTimeout(animateImages, 1000); 
+    }, 6000);
+  };
+
+  useEffect(() => {
+    animateImages();
+  }, [fadeAnim1, fadeAnim2, fadeAnim3]);
 
   useEffect(() => {
     const startButtonValue = AsyncStorage.getItem("startButton");
@@ -82,7 +95,26 @@ const SwipeCard = ({
     }
 
     setDataLoaded(true);
-    fetchAndSetData();
+  }, []);
+
+
+
+  // useEffect(() => {
+  //   const visibilityDuration = 5000;
+
+  //   const timeoutId = setTimeout(() => {
+  //     setIsVisible(false);
+  //   }, visibilityDuration);
+
+  //   return () => clearTimeout(timeoutId);
+  // }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setShowView(true);
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   // console.log('start');
@@ -102,7 +134,7 @@ const SwipeCard = ({
       "CREATE TABLE IF NOT EXISTS words (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, translation TEXT, tag TEXT, count INTEGER);",
       [],
       (tx, result) => {
-        console.log("Table created successfully.");
+        // console.log("Table created successfully.");
       },
       (error) => {
         console.error("Error creating table:", error);
@@ -110,35 +142,12 @@ const SwipeCard = ({
     );
   });
 
-  // db.transaction((tx) => {
-  //   tx.executeSql(
-  //     'ALTER TABLE words ADD COLUMN tag TEXT;',
-  //     [],
-  //     (tx, result) => {
-  //       console.log('Column "tag" added successfully.');
-  //     },
-  //     (error) => {
-  //       console.log('Error adding column "tag":', error);
-  //     }
-  //   );
+ 
 
-  //   tx.executeSql(
-  //     'ALTER TABLE words ADD COLUMN count INTEGER;',
-  //     [],
-  //     (tx, result) => {
-  //       console.log('Column "count" added successfully.');
-  //     },
-  //     (error) => {
-  //       console.log('Error adding column "count":', error);
-  //     }
-  //   );
-  // });
-
-  // useEffect(() => {
   const fetchAndSetData = async () => {
     try {
+      
       const netInfoState = await NetInfo.fetch();
-      setIsOnline(netInfoState.isConnected);
 
       db.transaction(async (tx) => {
         const countResult = await new Promise((resolve, reject) => {
@@ -163,10 +172,9 @@ const SwipeCard = ({
             db.transaction((tx) => {
               tx.executeSql(
                 "INSERT INTO words (word, translation, tag, count) VALUES (?, ?, ?, ?);",
-                [word, translation, "", 0], // Initialize tag as an empty string and count as 0
+                [word, translation, "", 0],
                 (tx, result) => {
-                  // console.log("Data inserted successfully:", word, translation);
-                },
+                               },
                 (error) => {
                   console.log("Error inserting data: ", error);
                 }
@@ -175,30 +183,9 @@ const SwipeCard = ({
           });
 
           setCards(apiData);
-          const wordCountRight = apiData.filter(
-            (word) => word.tag === "right"
-          ).length;
-          setWordCountWithTagRight(wordCountRight);
 
-          setDataLoaded(true); 
+          // setWordCountWithTagRight(wordCountRight);
         } else {
-          setDataSource("SQLite");
-          db.transaction((tx) => {
-            tx.executeSql(
-              "SELECT COUNT(*) as count FROM words WHERE tag = 'right';",
-              [],
-              (tx, result) => {
-                const countRight = result.rows.item(0).count;
-                setWordCountWithTagRight(countRight);
-              },
-              (error) => {
-                console.log(
-                  "Error with 'right' from SQLite:",
-                  error
-                );
-              }
-            );
-          });
           db.transaction((tx) => {
             tx.executeSql(
               "SELECT * FROM words WHERE count < 3 ORDER BY RANDOM();",
@@ -219,7 +206,6 @@ const SwipeCard = ({
                 const shuffledData = data.sort(() => Math.random() - 0.5);
 
                 setCards(shuffledData);
-                // console.log(shuffledData);
 
                 setLoading(false);
               }
@@ -246,19 +232,7 @@ const SwipeCard = ({
       });
 
       if (count === 0 && netInfoState.isConnected) {
-
         setCards(apiData);
-
-        if (apiData.length > 0) {
-          await AsyncStorage.setItem(
-            "lastCardId",
-            apiData[apiData.length - 1].id.toString()
-          );
-        }
-      } else {
-        setDataSource("SQLite");
-
-      
       }
 
       setTimeout(() => {
@@ -266,47 +240,26 @@ const SwipeCard = ({
       }, 30000);
 
       setLoading(false);
-      const storedLastCardId = await AsyncStorage.getItem("lastCardId");
-
-      if (storedLastCardId) {
-        setLastVisitedCardId(parseInt(storedLastCardId, 10));
-      }
-      setDataLoaded(true); 
     } catch (error) {
       console.error("Error:", error);
     }
   };
+ useEffect(() => {
+    fetchAndSetData();
+  }, []);
 
-  //   fetchAndSetData();
-  // }, []);
 
-  useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        "SELECT COUNT(*) as count FROM words WHERE tag = 'right';",
-        [],
-        (tx, result) => {
-          const countRight = result.rows.item(0).count;
-          setWordCountWithTagRight(countRight);
-        },
-        (error) => {
-          console.log(
-            error
-          );
-        }
-      );
-    });
-  });
-
+  
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql(
         "SELECT COUNT(*) as count FROM words WHERE count >= 3;",
         [],
         (tx, result) => {
-          const countItem = result.rows.item(0);
-          const count = countItem ? countItem.count : 0;
-          setCountGreaterThanThree(count);
+          //const count = countItem ? countItem.count : 0;
+          // // setCountGreaterThanThree(count);
+          const countWithTagRight3 = result.rows.item(0).count;
+          setCountWithTagRight3(countWithTagRight3);
         },
         (error) => {
           console.log(
@@ -320,8 +273,6 @@ const SwipeCard = ({
 
   const handleYup = (card) => {
     setSwipedRightCount((prevCount) => prevCount + 1);
-    setCurrentCardId(card.id);
-    AsyncStorage.setItem("lastCardId", card.id.toString());
 
     db.transaction((tx) => {
       tx.executeSql(
@@ -333,7 +284,7 @@ const SwipeCard = ({
             "UPDATE words SET tag = 'right', count = ? WHERE id = ?;",
             [currentCount + 1, card.id],
             (tx, result) => {
-              updateProgress(); 
+              updateProgress();
             },
             (error) => {
               console.log("Error updating tag and count:", error);
@@ -349,9 +300,7 @@ const SwipeCard = ({
 
   const handleNope = (card) => {
     setSwipedLeftCount((prevCount) => prevCount + 1);
-    setCurrentCardId(card.id);
 
-    AsyncStorage.setItem("lastCardId", card.id.toString());
     db.transaction((tx) => {
       tx.executeSql(
         "SELECT count FROM words WHERE id = ?;",
@@ -362,7 +311,7 @@ const SwipeCard = ({
             "UPDATE words SET tag = 'left', count = ? WHERE id = ?;",
             [currentCount + 1, card.id],
             (tx, result) => {
-              updateProgress(); 
+              updateProgress();
             },
             (error) => {
               console.log("Error updating tag and count:", error);
@@ -393,30 +342,13 @@ const SwipeCard = ({
     });
   };
 
-  useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        "SELECT COUNT(*) as count FROM words WHERE count >= 3;",
-        [],
-        (tx, result) => {
-          const countWithTagRight3 = result.rows.item(0).count;
-          setCountWithTagRight3(countWithTagRight3);
-          // updateSwipedRightCount( countWithTagRight3);
-        },
-        (error) => {
-          console.log("Error updating progress:", error);
-        }
-      );
-    });
-  }, [swipedRightCount, swipedLeftCount]);
-
   const handleAddWord = (word, translation) => {
     db.transaction((tx) => {
       tx.executeSql(
         "INSERT INTO words (word, translation, tag, count) VALUES (?, ?, ?, ?);",
-        [word, translation, "", 0], 
+        [word, translation, "", 0],
         (tx, result) => {
-          // console.log("Data inserted successfully:", word, translation, tag, count);
+           console.log("Data inserted successfully:", word, translation);
         },
         (error) => {
           console.log("Error inserting data: ", error);
@@ -426,13 +358,14 @@ const SwipeCard = ({
 
     const newCard = { id: cards.length + 1, word, translation };
     setCards([...cards, newCard]);
+    fetchAndSetData();
+
   };
 
   const restartApp = async () => {
     try {
       db.transaction((tx) => {
         tx.executeSql("DELETE FROM words;", [], (tx, result) => {
-          console.log("Table cleared successfully");
         });
       });
 
@@ -446,7 +379,6 @@ const SwipeCard = ({
             "INSERT INTO words (word, translation, tag, count) VALUES (?, ?, ?, ?);",
             [word, translation, "", 0],
             (tx, result) => {
-              // console.log("Data inserted successfully:", word, translation);
             },
             (error) => {
               console.log("Error inserting data: ", error);
@@ -457,36 +389,20 @@ const SwipeCard = ({
 
       setCards(shuffledData);
 
-      setWordCountWithTagRight(0);
       setSwipedRightCount(0);
       setSwipedLeftCount(0);
-      setCurrentCardId(null);
-      setLastVisitedCardId(null);
       setShowNoMoreCards(false);
-      setCountGreaterThanThree(0);
       setCountWithTagRight3(0);
       updateSwipedRightCount(0);
       fetchAndSetData();
-
-      if (apiData.length > 0) {
-        await AsyncStorage.setItem(
-          "lastCardId",
-          apiData[apiData.length - 1].id.toString()
-        );
-      }
     } catch (error) {
       console.error("Error restarting app:", error);
     }
   };
 
- 
-
   return (
-
-
-    <View style={styles.container}> 
-            {loading ? (
-             
+    <View style={styles.container}>
+      {loading ? (
         <Image
           source={require("../assets/loading.gif")}
           style={{
@@ -508,9 +424,9 @@ const SwipeCard = ({
               cards={cards}
               loop={true}
               onClickHandler={() => {}}
-              showNope	={false}
+              showNope={false}
               showMaybe={false}
-              showYup	={false}
+              showYup={false}
               renderCard={(cardData) => <Card {...cardData} />}
               handleYup={handleYup}
               handleNope={handleNope}
@@ -518,49 +434,41 @@ const SwipeCard = ({
               renderNoMoreCards={() =>
                 showNoMoreCards ? <NoMoreCards /> : null
               }
-              initialCardIndex={
-                lastVisitedCardId
-                  ? cards.findIndex((card) => card.id === lastVisitedCardId)
-                  : 0
-              }
             />
           ) : (
             showView && <Fireworks />
           )}
 
-          {/* {(Math.round((countWithTagRight3 / wordCount) * 100) === 100  && (
-            <Fireworks />
-            )
-          )} */}
-
           <View style={styles.buttonContainer}>
             <View>
             <Pressable
-              underlayColor="#c4661f"
- style={({ pressed }) => [
-          {
-            backgroundColor: pressed ? '#c4661f' : '#6c526f', // Change background color on press
-           
-          },
-          styles.button ]}
-                   onPress={() => setShowConfirmationModal(true)}
-              >
-                <Text style={[styles.buttonText]}>
-                  <Reload name="reload1" size={40} />
-                </Text>
-              </Pressable>
+  underlayColor="#c4661f"
+  style={({ pressed }) => [
+    {
+      backgroundColor: pressed ? "#c4661f" : "#6c526f",
+      ...(Math.round((countWithTagRight3 / wordCount) * 100) >= 100 && { top: 50 }), // Добавляем top: 40, если условие верно
+    },
+    styles.button,
+  ]}
+  onPress={() => setShowConfirmationModal(true)}
+>
+  <Text style={[styles.buttonText]}>
+    <Reload name="reload1" size={40} />
+  </Text>
+</Pressable>
+
             </View>
 
             <View>
               {Math.round((countWithTagRight3 / wordCount) * 100) != 100 && (
-                 <Pressable
-                 underlayColor="#c4661f"
-    style={({ pressed }) => [
-             {
-               backgroundColor: pressed ? '#c4661f' : '#6c526f', // Change background color on press
-              
-             },
-             styles.button ]}
+                <Pressable
+                  underlayColor="#c4661f"
+                  style={({ pressed }) => [
+                    {
+                      backgroundColor: pressed ? "#c4661f" : "#6c526f", // Change background color on press
+                    },
+                    styles.button,
+                  ]}
                   onPress={() => setShowForm(true)}
                 >
                   <AddForm
@@ -579,23 +487,6 @@ const SwipeCard = ({
             </View>
           </View>
 
-          {/* )}  */}
-
-         
-          {/* 
-<Pressable
-            underlayColor="#c4661f"
-            style={styles.button}
-          
-            onPress={openSetting}
-
-
-
-          >
-            <Text >
-fd            </Text>
-          </Pressable> */}
-
           <ModalRestart
             isVisible={showConfirmationModal}
             onClose={() => setShowConfirmationModal(false)}
@@ -603,7 +494,7 @@ fd            </Text>
           />
         </>
       )}
-      <View>
+          <View>
         {loading && showView && (
           <Pressable
           style={({ pressed }) => [
@@ -611,7 +502,7 @@ fd            </Text>
               backgroundColor: pressed ? '#c4661f' : '#6c526f', // Change background color on press
              
             },
-            styles.button ]}
+            styles.buttonStart ]}
                         underlayColor="#c4661f"
             onPress={async () => {
               await AsyncStorage.setItem("startButton", "1");
@@ -620,7 +511,32 @@ fd            </Text>
               fetchAndSetData();
             }}
           >
-            <Text style={[styles.buttonText]}>start</Text>
+            <View style={styles.buttonStartContainer}>
+                       {/* <Text style={styles.buttonText}>
+                        проведите карточку вправо три раза для полного запоминания
+               слова</Text> */}
+
+            <Text style={styles.buttonInfo}>
+
+              <Animated.View style={{ opacity: fadeAnim1 }}>
+                <StarOutline name="star-outline" size={30} color="#f9d479" />
+              </Animated.View>
+
+              <Animated.View style={{ opacity: fadeAnim2 }}>
+                <StarHalf name="star-half-sharp" size={32} color="#f9d479" />
+              </Animated.View>
+
+              <Animated.View style={{ opacity: fadeAnim3 }}>
+                <Star name="star-sharp" size={32} color="#f9d479" />
+              </Animated.View>
+            </Text> 
+
+            <Text style={styles.buttonText}>нажмите на кнопку, если готовы приступить</Text>
+
+            </View>
+            
+            
+           
           </Pressable>
         )}
       </View>
@@ -642,10 +558,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   button: {
-     //backgroundColor: "#6c526f",
+    //backgroundColor: "#6c526f",
     borderRadius: 15,
     margin: 10,
-    padding: isSmallScreen ? heightPercentageToDP('1%') : 15,
+    padding: isSmallScreen ? heightPercentageToDP("1%") : 15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
@@ -655,13 +571,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#a9b388",
     fontFamily: "vidaloka",
-
+    textAlign:"center",
+    fontSize:20,
   },
 
   containerProgress: {
     position: "absolute",
-    top: isSmallScreen ? heightPercentageToDP('30%') : 200,
-
+    top: isSmallScreen ? heightPercentageToDP("30%") : 200,
   },
   overlay: {
     flex: 1,
@@ -697,7 +613,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     fontSize: 20,
   },
-  modalButton: {},
   toggleButton: {
     position: "absolute",
     bottom: 0,
@@ -715,8 +630,7 @@ const styles = StyleSheet.create({
   },
 
   yupStyle: {
-   
-    position: 'absolute',
+    position: "absolute",
     padding: 20,
     bottom: 20,
     borderRadius: 5,
@@ -724,11 +638,10 @@ const styles = StyleSheet.create({
   },
   yupTextStyle: {
     fontSize: 0,
-    color: 'green',
+    color: "green",
   },
   maybeStyle: {
-    
-    position: 'absolute',
+    position: "absolute",
     padding: 20,
     bottom: 20,
     borderRadius: 5,
@@ -736,11 +649,10 @@ const styles = StyleSheet.create({
   },
   maybeTextStyle: {
     fontSize: 0,
-    color: 'blue',
+    color: "blue",
   },
   nopeStyle: {
-   
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
     padding: 20,
     borderRadius: 5,
@@ -748,7 +660,34 @@ const styles = StyleSheet.create({
   },
   nopeTextStyle: {
     fontSize: 0,
-    color: 'red',
+    color: "red",
+  },
+  buttonStart:{
+    borderRadius: 15,
+    padding:10,
+    bottom:150,
+    zIndex:22,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  buttonInfo: {
+    alignItems: "center",
+    textAlign: "center",
+    display:"flex",
+    textAlign:"center",
+  },
+  buttonStartContainer:{
+    display:"flex",
+    direction:"column",
+    padding:10,
+
+ 
+    alignItems: "center",
+    textAlign: "center",
+ 
   }
 });
 

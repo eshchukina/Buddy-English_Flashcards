@@ -4,18 +4,15 @@ import {
   Text,
   ScrollView,
   Pressable,
-  Image,
   Modal,
   View,
-  Button,
   Animated,
 } from "react-native";
-
+import * as Animatable from "react-native-animatable";
 
 import Passing from "./Passing";
 import Cards from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Icon from "react-native-vector-icons/AntDesign";
 import Star from "react-native-vector-icons/Ionicons";
 import StarHalf from "react-native-vector-icons/Ionicons";
 import StarOutline from "react-native-vector-icons/Ionicons";
@@ -29,10 +26,28 @@ export default function Dashboard({ setSelectedComponent }) {
   const fadeAnim2 = useRef(new Animated.Value(0)).current;
   const fadeAnim3 = useRef(new Animated.Value(0)).current;
 
+  const zoomOut = {
+    0: {
+      opacity: 0,
+      scale: 0.5,
+      translateX: 0,
+    },
+    0.5: {
+      opacity: 0.7,
+      scale: 0.7,
+      translateX: 0,
+    },
+    1: {
+      opacity: 1,
+      scale: 1,
+      translateX: 0,
+    },
+  };
+
   const fadeIn = (animatedValue) => {
     Animated.timing(animatedValue, {
       toValue: 1,
-      duration: 1000, // Adjust the duration as needed
+      duration: 1000,
       useNativeDriver: false,
     }).start();
   };
@@ -40,7 +55,7 @@ export default function Dashboard({ setSelectedComponent }) {
   const fadeOut = (animatedValue) => {
     Animated.timing(animatedValue, {
       toValue: 0,
-      duration: 1000, // Adjust the duration as needed
+      duration: 1000,
       useNativeDriver: false,
     }).start();
   };
@@ -60,7 +75,7 @@ export default function Dashboard({ setSelectedComponent }) {
 
     setTimeout(() => {
       fadeOut(fadeAnim3);
-      setTimeout(animateImages, 1000); // Recursive call for continuous loop
+      setTimeout(animateImages, 1000);
     }, 6000);
   };
 
@@ -103,7 +118,7 @@ export default function Dashboard({ setSelectedComponent }) {
           <Text
             style={[styles.buttonText, isPressed && styles.buttonActiveText]}
           >
-            open cards
+            cards
           </Text>
           <Text
             style={[styles.buttonText, isPressed && styles.buttonActiveText]}
@@ -112,7 +127,8 @@ export default function Dashboard({ setSelectedComponent }) {
           </Text>
         </>
       </Pressable>
-      <Image
+      <Animatable.Image
+        animation={zoomOut}
         source={require("../assets/img.png")}
         style={{
           width: 500,
@@ -124,78 +140,72 @@ export default function Dashboard({ setSelectedComponent }) {
       <Modal visible={showInstructions} animationType="fade" transparent={true}>
         <View style={styles.overlay}>
           <ScrollView style={styles.modalContent}>
-            
-             <Text style={[styles.textModal, styles.buttonInfo]}>Welcome!</Text> 
+            <Text style={[styles.textModal, styles.buttonInfo]}>Welcome!</Text>
 
             <Text style={styles.textModal}>
-              Embark on a language-learning journey with our app designed to
-              teach you the 1000 most commonly used English words. Immerse
-              yourself in an interactive experience where you not only learn the
+              Start your language learning journey with our app, designed to
+              teach you the 1000 most frequently used English words. Immerse
+              yourself in an interactive experience where you not only learn
               words but also their translations.
             </Text>
             <Text style={styles.textModal}>
-              The learning process involves a dynamic swipe mechanism – swipe
+              The learning process involves a dynamic swipe mechanism - swipe
               right if you've mastered the word, and left if you're still
               working on it.
             </Text>
 
             <Text style={styles.textModal}>
-              Your ultimate goal is to achieve a perfect 100% mastery of the
-              vocabulary. Track your progress and strive to elevate your rating
-              to the highest possible mark. The app provides a user-friendly
-              interface, making the learning process engaging and effective.
+              Your ultimate goal is to achieve perfect mastery of the
+              vocabulary, reaching 100%. Track your progress and aim to raise
+              your rating to the highest possible level.
             </Text>
 
             <Text style={styles.textModal}>
-              Reinforce your English language skills, broaden your vocabulary,
-              and witness your proficiency soar as you work towards achieving
-              the top rating. Download now and embark on a transformative
-              language-learning adventure!
+              Strengthen your English language skills, expand your vocabulary,
+              and watch as your mastery grows. Embark on a transformational
+              language learning adventure!
             </Text>
 
-            <Text style={[styles.textModal, styles.buttonInfo]}>
-              Image of a button to go to the page with cards:
-            </Text>
-            <Text style={[styles.textModal, styles.buttonInfo]}>
+            <View style={styles.containerModal}>
+              <Text style={[styles.textModal, styles.buttonInfo]}>
+                Button image for transitioning to the card page:
+              </Text>
               <Pressable style={styles.button}>
-                <>
-                  <Text style={[styles.buttonText]}>open cards</Text>
-                  <Text style={[styles.buttonText]}>
-                    <Cards name="cards" size={40} />
-                  </Text>
-                </>
-              </Pressable>
-            </Text>
-
-            <Text style={[styles.textModal, styles.buttonInfo]}>
-              Swipe the card to the right three times for full memorization of
-              the new word:
-            </Text>
-            <Text style={[styles.textModal, styles.buttonInfo]}>
-              <Animated.View style={{ opacity: fadeAnim1 }}>
-                <StarOutline name="star-outline" size={30} color="#f9d479" />
-              </Animated.View>
-
-              <Animated.View style={{ opacity: fadeAnim2 }}>
-                <StarHalf name="star-half-sharp" size={32} color="#f9d479" />
-              </Animated.View>
-
-              <Animated.View style={{ opacity: fadeAnim3 }}>
-                <Star name="star-sharp" size={32} color="#f9d479" />
-              </Animated.View>
-            </Text>
-
-            <Text style={[styles.textModal, styles.buttonInfo]}>
-              Image of a button to go to the personal account:
-            </Text>
-            <Text style={[styles.textModal, styles.buttonInfo]}>
-              <Pressable underlayColor="#c4661f" style={styles.button2}>
-                <Text style={styles.buttonText}>
-                  <IconFooter name="user" size={40} />
+                <Text style={[styles.buttonText]}>cards</Text>
+                <Text style={[styles.buttonText]}>
+                  <Cards name="cards" size={40} />
                 </Text>
               </Pressable>
-            </Text>
 
+              <Text style={[styles.textModal, styles.buttonInfo]}>
+                Swipe the card to the right three times to fully memorize the
+                new word.
+              </Text>
+              <Text style={[styles.textModal, styles.buttonInfo]}>
+                <Animated.View style={{ opacity: fadeAnim1 }}>
+                  <StarOutline name="star-outline" size={30} color="#f9d479" />
+                </Animated.View>
+
+                <Animated.View style={{ opacity: fadeAnim2 }}>
+                  <StarHalf name="star-half-sharp" size={32} color="#f9d479" />
+                </Animated.View>
+
+                <Animated.View style={{ opacity: fadeAnim3 }}>
+                  <Star name="star-sharp" size={32} color="#f9d479" />
+                </Animated.View>
+              </Text>
+
+              <Text style={[styles.textModal, styles.buttonInfo]}>
+                Button image for accessing the personal account:
+              </Text>
+              <Text style={[styles.textModal, styles.buttonInfo]}>
+                <Pressable underlayColor="#c4661f" style={styles.button2}>
+                  <Text style={styles.buttonText}>
+                    <IconFooter name="user" size={40} />
+                  </Text>
+                </Pressable>
+              </Text>
+            </View>
             <Pressable
               style={[styles.closeButton]}
               onPress={() => setShowInstructions(false)}
@@ -209,8 +219,7 @@ export default function Dashboard({ setSelectedComponent }) {
                   styles.buttonText,
                 ]}
               >
-                {/* <Icon name="close" size={30} /> */}
-                Let's start!
+                Good luck!
               </Text>
             </Pressable>
           </ScrollView>
@@ -240,12 +249,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
   },
-
   modalContent: {
-    padding: 35,
+    padding: 20,
     paddingBottom: 30,
     borderRadius: 20,
-    width: "95%",
+    width: "96%",
     textAlign: "center",
     margin: 10,
     borderWidth: 2,
@@ -266,21 +274,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#c4661f",
     borderRadius: 15,
     paddingTop: 10,
-    paddingBottom: 10,
+    paddingBottom: 20,
     paddingRight: 10,
     paddingLeft: 10,
-    marginTop: 50,
     width: 150,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
     elevation: 5,
+    marginTop: 10,
+    marginBottom: 10,
   },
   closeButton: {
     borderRadius: 50,
     padding: 15,
-
     marginTop: 50,
     marginBottom: 150,
     marginLeft: 60,
@@ -291,7 +299,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    elevation: 5, //
+    elevation: 5,
   },
   buttonText: {
     color: "#f9ebc7",
@@ -307,7 +315,6 @@ const styles = StyleSheet.create({
     color: "#783d19",
     fontFamily: "vidaloka",
     margin: 5,
-
     textAlign: "justify",
   },
   button2: {
@@ -323,6 +330,10 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
     width: 100,
-    margin: "auto",
+  },
+  containerModal: {
+    display: "flex",
+    textAlign: "center",
+    alignItems: "center",
   },
 });

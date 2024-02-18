@@ -12,27 +12,27 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome5";
 
 import Close from "react-native-vector-icons/AntDesign";
-import { isEmailValid, isPasswordValid } from "./Validation";
+import { isEmailValid, isPasswordValid, isNameValid } from "../Validation/Validation";
 
-export default function ModalSingIn({
+export default function ModalLogin({
   visible,
   onClose,
-  closeModal,
   isDarkMode,
-  handleCloseModal,
+  closeModal,
 }) {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [isPressed1, setIsPressed1] = useState(false);
-
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [nameError, setNameError] = useState("");
 
   const handlePressIn = () => {
     setEmailError("");
-
+    setNameError("");
     setPasswordError("");
   };
 
@@ -41,8 +41,7 @@ export default function ModalSingIn({
   };
 
   const handlePressIn1 = () => {
-    setPasswordError("");
-    setEmailError("");
+    setIsPressed1(true);
   };
 
   const handlePressOut1 = () => {
@@ -53,21 +52,25 @@ export default function ModalSingIn({
     setShowPassword(!showPassword);
   };
 
-  const handleCloseModalSingIn = () => {
+  const handleCloseModal = () => {
     // setIsPressed2(false);
 
     closeModal();
   };
 
   const handleFormSubmit = () => {
-    if (!isEmailValid(email) || !isPasswordValid(password)) {
+    if (
+      !isNameValid(name) ||
+      !isEmailValid(email) ||
+      !isPasswordValid(password)
+    ) {
       setEmailError(!isEmailValid(email) ? "invalid email" : "");
       setPasswordError(
         !isPasswordValid(password)
           ? "password must be at least 6 characters long"
           : ""
       );
-
+      setNameError(!isNameValid(name) ? "name must not be empty" : "");
       return;
     }
   };
@@ -88,20 +91,34 @@ export default function ModalSingIn({
               isDarkMode ? styles.dark : styles.light,
             ]}
           >
-            Login
+            Registration
           </Text>
+
+          <View>
+            <TextInput
+              style={[
+                styles.input,
+                isDarkMode ? styles.darkInput : styles.lightInput,
+              ]}
+              placeholder="name"
+              placeholderTextColor="#b99470"
+              value={name}
+              onChangeText={(text) => setName(text)}
+            />
+            {nameError ? (
+              <Text style={styles.errorText}>{nameError}</Text>
+            ) : null}
+          </View>
 
           <TextInput
             style={[
               styles.input,
               isDarkMode ? styles.darkInput : styles.lightInput,
-              emailError && styles.inputError,
             ]}
-            placeholder={"email"}
+            placeholder="email"
             placeholderTextColor="#b99470"
             value={email}
             onChangeText={(text) => setEmail(text)}
-            onFocus={handlePressIn}
           />
           {emailError ? (
             <Text style={styles.errorText}>{emailError}</Text>
@@ -112,16 +129,13 @@ export default function ModalSingIn({
               style={[
                 styles.passwordInput,
                 isDarkMode ? styles.darkInput : styles.lightInput,
-                passwordError && styles.inputError,
               ]}
               secureTextEntry={!showPassword}
               placeholder="password"
               placeholderTextColor="#b99470"
               value={password}
               onChangeText={(text) => setPassword(text)}
-              onFocus={handlePressIn}
             />
-
             <Pressable
               style={styles.lockPassword}
               onPress={handlePasswordVisibility}
@@ -138,33 +152,31 @@ export default function ModalSingIn({
           {passwordError ? (
             <Text style={styles.errorText}>{passwordError}</Text>
           ) : null}
+
           <TouchableHighlight
             underlayColor="#c4661f"
             style={[
               styles.button,
               isDarkMode ? styles.darkButton : styles.lightButton,
-              email && styles.buttonActive,
             ]}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             onPress={handleFormSubmit}
           >
-            <Text style={styles.buttonText}>create</Text>
+            <Text style={styles.buttonText}>register</Text>
           </TouchableHighlight>
 
           <TouchableHighlight
             underlayColor="#c4661f"
             style={[
               styles.closeButton,
-
-              password && styles.buttonActive,
+              isPressed1 && styles.buttonActive,
               isDarkMode ? styles.darkButton : styles.lightButton,
             ]}
-            onPressIn={() => {
-              handleCloseModalSingIn();
+            onPressIn={handlePressIn}
+            onPressOut={() => {
               handlePressOut1();
-              handlePressIn1();
-              // handleCloseModal();
+              handleCloseModal();
             }}
           >
             <Text style={styles.buttonText}>
@@ -180,15 +192,11 @@ export default function ModalSingIn({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-
     justifyContent: "center",
     alignItems: "center",
   },
-
   modalContent: {
     padding: 35,
-    paddingTop: 65,
-    paddingBottom: 55,
     borderRadius: 20,
     width: 250,
     textAlign: "center",
@@ -203,12 +211,10 @@ const styles = StyleSheet.create({
   },
   dark: {
     backgroundColor: "#333333",
-    color: "#FFFFFF",
   },
   modalText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#756685",
     alignItems: "center",
   },
   titleText: {
@@ -222,6 +228,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 15,
     padding: 5,
+    marginTop: 15,
   },
   darkInput: {
     backgroundColor: "#b8bbc4",
@@ -250,22 +257,19 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 15,
     padding: 15,
+    marginTop: 15,
     alignItems: "center",
     backgroundColor: "#b99470",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    elevation: 5, //
-    marginTop: 15,
-  },
-  buttonText: {
-    color: "#783d19",
+    elevation: 5,
   },
   closeButton: {
     borderRadius: 50,
     padding: 12,
-    marginTop: 20,
+    marginTop: 10,
     marginLeft: 60,
     marginRight: 60,
     alignItems: "center",
@@ -274,7 +278,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    elevation: 5,
+    elevation: 5, //
   },
   buttonActive: {
     elevation: 6,
@@ -291,9 +295,15 @@ const styles = StyleSheet.create({
   lightButton: {
     backgroundColor: "#b99470",
   },
+  buttonText: {
+    textAlign: "center",
+  },
   errorText: {
     fontSize: 10,
     color: "#c4661f",
     marginLeft: 5,
+  },
+  buttonText: {
+    color: "#783d19",
   },
 });

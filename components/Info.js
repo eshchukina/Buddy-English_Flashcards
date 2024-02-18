@@ -2,12 +2,6 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 
 import Back from "react-native-vector-icons/AntDesign";
-import Cards from "react-native-vector-icons/MaterialCommunityIcons";
-import Star from "react-native-vector-icons/Ionicons";
-import StarHalf from "react-native-vector-icons/Ionicons";
-import StarOutline from "react-native-vector-icons/Ionicons";
-
-import IconFooter from "react-native-vector-icons/FontAwesome5";
 const Info = ({ setSelectedComponent }) => {
   const [isPressed, setIsPressed] = useState(false);
 
@@ -39,28 +33,30 @@ const Info = ({ setSelectedComponent }) => {
 
       <View style={styles.userInfo}>
         <Text style={styles.text}>
-        Embark on a language-learning journey with our app designed to 
-        teach you the 1000 most commonly used English words. Immerse yourself in an interactive experience where you 
-          not only learn the words but also their translations.
+          Embark on a language-learning journey with our app designed to teach
+          you the 1000 most commonly used English words. Immerse yourself in an
+          interactive experience where you not only learn the words but also
+          their translations.
         </Text>
 
         <Text style={styles.text}>
-        The learning process involves a dynamic swipe mechanism – swipe right if you've 
-        mastered the word, and left if you're still working on it.
+          The learning process involves a dynamic swipe mechanism – swipe right
+          if you've mastered the word, and left if you're still working on it.
         </Text>
 
         <Text style={styles.text}>
-        Your ultimate goal is to achieve a perfect 100% mastery of the vocabulary. 
-        Track your progress and strive to elevate your rating to the highest possible mark. The app provides a user-friendly
-         interface, making the learning process engaging and effective.
+          Your ultimate goal is to achieve a perfect 100% mastery of the
+          vocabulary. Track your progress and strive to elevate your rating to
+          the highest possible mark. The app provides a user-friendly interface,
+          making the learning process engaging and effective.
         </Text>
 
         <Text style={styles.text}>
-        Reinforce your English language skills, broaden your vocabulary, and witness your proficiency soar as you work towards achieving the top rating. 
-        Download now and embark on a transformative language-learning adventure!
+          Reinforce your English language skills, broaden your vocabulary, and
+          witness your proficiency soar as you work towards achieving the top
+          rating. Download now and embark on a transformative language-learning
+          adventure!
         </Text>
-
-
       </View>
     </ScrollView>
   );

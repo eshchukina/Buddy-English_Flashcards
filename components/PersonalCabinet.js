@@ -9,7 +9,7 @@ import {
   Share as ShareModule,
   Image,
   SafeAreaView,
-  Button, // Add this line to import the Image component
+  Button, 
 } from "react-native";
 import { Dimensions } from 'react-native';
 import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
@@ -17,8 +17,8 @@ import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsi
 const { width: screenWidth } = Dimensions.get('window');
 const isSmallScreen = screenWidth < 375; 
 import * as ImagePicker from "expo-image-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
-import ModalSetting from "./ModalSetting";
+import AsyncStorage from "@react-native-async-storage/async-storage"; 
+import ModalSetting from "./ModalWindow/ModalSetting";
 import Setting from "react-native-vector-icons/SimpleLineIcons";
 import Icon2 from "react-native-vector-icons/AntDesign";
 import Mail from "react-native-vector-icons/AntDesign";
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   userInfo: {
-    position: "relative]",
+    position: "relative",
     marginBottom: 20,
   },
 

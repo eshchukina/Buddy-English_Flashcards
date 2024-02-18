@@ -11,12 +11,15 @@ import {
 
 import Swiper from "react-native-swiper";
 import * as Animatable from "react-native-animatable";
-import { Dimensions } from 'react-native';
+import { Dimensions } from "react-native";
 
-import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
+import {
+  heightPercentageToDP,
+  widthPercentageToDP,
+} from "react-native-responsive-screen";
 
-const { width: screenWidth } = Dimensions.get('window');
-const isSmallScreen = screenWidth < 375; 
+const { width: screenWidth } = Dimensions.get("window");
+const isSmallScreen = screenWidth < 375;
 export default function DownloadPage({ setSelectedComponent }) {
   const [currentPage, setCurrentPage] = useState(0);
   const flatListRef = useRef(null);
@@ -161,7 +164,10 @@ export default function DownloadPage({ setSelectedComponent }) {
             </Pressable>
           )}
 
-          {currentPage ===0 || currentPage === 1 || currentPage === 2 || currentPage === 3 ? (
+          {currentPage === 0 ||
+          currentPage === 1 ||
+          currentPage === 2 ||
+          currentPage === 3 ? (
             <Pressable
               style={styles.button}
               underlayColor="#c4661f"
@@ -247,7 +253,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   mainTextBox: {
-    marginTop: isSmallScreen ? heightPercentageToDP('-10%') : 50,
+    marginTop: isSmallScreen ? heightPercentageToDP("-10%") : 50,
     textAlign: "center",
     alignItems: "center",
   },

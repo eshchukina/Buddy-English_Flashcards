@@ -1,34 +1,40 @@
 import React, { useState, useRef, useEffect } from "react";
-import { StyleSheet, Text, View, Animated, Pressable, Button  } from "react-native";
-import { Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  Pressable,
+} from "react-native";
+import { Dimensions } from "react-native";
 
 import Star from "react-native-vector-icons/Ionicons";
 import StarHalf from "react-native-vector-icons/Ionicons";
 import StarOutline from "react-native-vector-icons/Ionicons";
-import { heightPercentageToDP, widthPercentageToDP } from 'react-native-responsive-screen';
-const { width: screenWidth } = Dimensions.get('window');
+import {
+  heightPercentageToDP,
+  widthPercentageToDP,
+} from "react-native-responsive-screen";
+const { width: screenWidth } = Dimensions.get("window");
 const isSmallScreen = screenWidth < 375;
 import Sound from "react-native-vector-icons/AntDesign";
 
-import * as Speech from 'expo-speech';
+import * as Speech from "expo-speech";
 
 const Card = ({ word, translation, count }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  
+
   const frontOpacity = useRef(new Animated.Value(0)).current;
   const backOpacity = useRef(new Animated.Value(0)).current;
 
   const speak = () => {
-    
-    console.log('Speak function called');
+    console.log("Speak function called");
 
     const thingToSay = word;
     Speech.speak(thingToSay);
-
   };
 
   const flipCard = () => {
-
     const newIsFlipped = !isFlipped;
 
     const animations = [
@@ -50,7 +56,6 @@ const Card = ({ word, translation, count }) => {
   };
 
   const frontAnimatedStyle = {
-    
     transform: [
       {
         rotateY: frontOpacity.interpolate({
@@ -89,34 +94,26 @@ const Card = ({ word, translation, count }) => {
   return (
     <Pressable style={styles.cardContainer} onPress={flipCard}>
       <View style={styles.flashcard}>
-      
-   
         <Animated.View style={[styles.card, frontAnimatedStyle]}>
-
           <Text style={styles.cardStar}>{renderStar()}</Text>
-          
+
           <Text style={styles.cardText}>{word}</Text>
-  
-        
         </Animated.View>
 
-        
         <Animated.View
           style={[styles.card, styles.cardBack, backAnimatedStyle]}
         >
           <Text style={styles.cardStar}>{renderStar()}</Text>
           <Text style={styles.cardText}>{translation}</Text>
-
         </Animated.View>
-        
       </View>
-      <Pressable style={styles.soundContainer} title="Press to hear some words" 
-          
-          onPress={speak}
-           >
+      <Pressable
+        style={styles.soundContainer}
+        title="Press to hear some words"
+        onPress={speak}
+      >
         <Text style={styles.soundButton}>
-        <Sound name="sound" size={40} />
-
+          <Sound name="sound" size={40} />
         </Text>
       </Pressable>
     </Pressable>
@@ -125,13 +122,13 @@ const Card = ({ word, translation, count }) => {
 
 const styles = StyleSheet.create({
   flashcard: {
-    marginTop: isSmallScreen ? heightPercentageToDP('20%') : 50,
-    width: isSmallScreen ? widthPercentageToDP('60%') : 300, // Adjust as needed
-    height: isSmallScreen ? heightPercentageToDP('25%') : 200, // Adjust as needed
+    marginTop: isSmallScreen ? heightPercentageToDP("20%") : 50,
+    width: isSmallScreen ? widthPercentageToDP("60%") : 300, 
+    height: isSmallScreen ? heightPercentageToDP("25%") : 200, 
     perspective: 1000,
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
   },
   card: {
     width: "100%",
@@ -153,27 +150,19 @@ const styles = StyleSheet.create({
     borderColor: "#a9b388",
     borderWidth: 5,
   },
-  soundButton:{
-  color: "#a9b388",
-  
-
+  soundButton: {
+    color: "#a9b388",
   },
-  soundContainer:{
-    padding:10,
-   
-  zIndex:100,
-    
-
+  soundContainer: {
+    padding: 10,
+    zIndex: 100,
   },
-  soundWrapper:{
-    
-  },
+  soundWrapper: {},
   cardText: {
     color: "#fefae0",
     fontFamily: "vidaloka",
     textAlign: "center",
     fontSize: isSmallScreen ? heightPercentageToDP("5%") : 35,
-
   },
   cardContainer: {
     textAlign: "center",

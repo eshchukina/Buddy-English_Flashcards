@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: "#fefae0",
     paddingVertical: 10,
   },
   button: {

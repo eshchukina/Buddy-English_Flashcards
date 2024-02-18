@@ -9,21 +9,15 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
-import * as SQLite from "expo-sqlite";
-import * as Validation from "./Validation";
+import * as Validation from "../Validation/Validation";
 
-
-export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
+export default function AddForm({ visible, onClose, onAddWord }) {
   const [isPressed, setIsPressed] = useState(false);
   const [isPressed1, setIsPressed1] = useState(false);
   const [word, setWord] = useState("");
   const [translation, setTranslation] = useState("");
   const [wordError, setWordError] = useState("");
-
-
-  const handlePressIn = () => {
-    setIsPressed(true);
-  };
+  const [translationError, setTranslationError] = useState("");
 
   const handlePressOut = () => {
     setIsPressed(false);
@@ -33,87 +27,82 @@ export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
     setIsPressed1(true);
   };
 
-  const handlePressOut1 = () => {
-    setIsPressed1(false);
-  };
-
   const handleCloseModal = () => {
-    onClose();
     setIsPressed1(false);
-  };
-
-  const handleCreateWord = () => {
-    if (!Validation.isWordAndTranslationValid(word, translation)) {
-      return;
-    }
-
-    onAddWord(word, translation);
+    setTranslation("");
+    setWord("");
+    setWordError("");
+    setTranslationError("");
     onClose();
   };
-
-  const handleWordChange = (text) => {
-    setWord(text);
-    if (text.length > 30) {
-      setWordError("Word should not exceed 30 characters");
+  const handleCreateWord = () => {
+    setIsPressed(true);
+    const isWordValid = Validation.isWordAndTranslationValid(word, translation);
+  
+    if (!word.trim() || !translation.trim()) {
+      setWordError("fields cannot be empty");
+    } else if (word.length > 30 || translation.length > 30) {
+      setWordError("word should not exceed 30 characters");
     } else {
       setWordError("");
     }
+  
+    if (isWordValid && word.length <= 30 && translation.length <= 30) {
+      onAddWord(word, translation);
+      onClose();
+      setTranslation("");
+      setWord("");
+      setWordError("");
+      setTranslationError("");
+    }
   };
   
-  
+
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
       <View style={styles.overlay}>
-        
         <TouchableWithoutFeedback onPress={onClose}>
           <View style={styles.overlayContent}></View>
         </TouchableWithoutFeedback>
-        
-        <View
-          style={[styles.modalContent, isDarkMode ? styles.dark : styles.light]}
-        >
-          <Text
-            style={[
-              styles.modalText,
-              styles.titleText,
-              isDarkMode ? styles.dark : styles.light,
-            ]}
-          >
-            add your word and translation
-          </Text>
+
+        <View style={[styles.modalContent, styles.light]}>
+          <Text style={[styles.modalText, styles.titleText, styles.light]}>
+          add your word and translation          </Text>
 
           <TextInput
-            style={[
-              styles.input,
-              isDarkMode ? styles.darkInput : styles.lightInput,
-            ]}
+            style={[styles.input, styles.lightInput]}
             placeholder="word"
             placeholderTextColor="#b99470"
             value={word}
             onChangeText={(text) => setWord(text)}
           />
-          
+
           <View style={styles.passwordInputContainer}>
             <TextInput
-              style={[
-                styles.passwordInput,
-                isDarkMode ? styles.darkInput : styles.lightInput,
-              ]}
+              style={[styles.passwordInput, styles.lightInput]}
               placeholder="translation"
               placeholderTextColor="#b99470"
               value={translation}
               onChangeText={(text) => setTranslation(text)}
             />
           </View>
-        
-        
+
+          <View style={styles.errorContainer}>
+            {wordError !== "" && (
+              <Text style={styles.wordError}>{wordError}</Text>
+            )}
+            {translationError !== "" && (
+              <Text style={styles.wordError}>{translationError}</Text>
+            )}
+          </View>
+
           <Pressable
             style={[
               styles.button,
               isPressed && styles.buttonActive,
-              isDarkMode ? styles.darkButton : styles.lightButton,
+              styles.lightButton,
             ]}
-            onPress={handleCreateWord}
+            onPressIn={handleCreateWord}
             onPressOut={handlePressOut}
             underlayColor="#c4661f"
           >
@@ -127,7 +116,7 @@ export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
                 },
               ]}
             >
-              create
+              создать
             </Text>
           </Pressable>
 
@@ -135,11 +124,10 @@ export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
             style={[
               styles.closeButton,
               isPressed1 && styles.buttonActive,
-              isDarkMode ? styles.darkButton : styles.lightButton,
+              styles.lightButton,
             ]}
             onPressIn={handlePressIn1}
-            onPressOut={handlePressOut1}
-            onPress={handleCloseModal}
+            onPressOut={handleCloseModal}
             underlayColor="#c4661f"
           >
             <Text
@@ -154,7 +142,6 @@ export default function AddForm({ visible, onClose, onAddWord, isDarkMode }) {
             >
               <Icon name="close" size={30} />
             </Text>
-            
           </Pressable>
         </View>
       </View>
@@ -169,10 +156,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   modalContent: {
     padding: 35,
-    paddingTop: 55,
+    paddingTop: 20,
     paddingBottom: 30,
     borderRadius: 20,
     width: 250,
@@ -186,35 +172,25 @@ const styles = StyleSheet.create({
     backgroundColor: "#fefae0",
     color: "#783d19",
   },
-  dark: {
-    backgroundColor: "#333333",
-    color: "#FFFFFF",
-  },
   modalText: {
     alignItems: "center",
     fontFamily: "vidaloka",
-
   },
   titleText: {
-  
     textAlign: "center",
     fontFamily: "vidaloka",
     padding: 10,
     fontSize: 18,
-
     color: "#6c526f",
     textAlign: "center",
     marginTop: 15,
-},
+  },
   input: {
     borderColor: "#5f6f52",
     borderWidth: 1,
     borderRadius: 15,
     padding: 5,
     marginBottom: 15,
-  },
-  darkInput: {
-    backgroundColor: "#b8bbc4",
   },
   lightInput: {
     backgroundColor: "#fefae0",
@@ -246,13 +222,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    elevation: 5, //
+    elevation: 5, 
     marginTop: 10,
   },
   closeButton: {
     borderRadius: 50,
     padding: 10,
-
     marginTop: 10,
     marginLeft: 60,
     marginRight: 60,
@@ -262,7 +237,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    elevation: 5, //
+    elevation: 5,
   },
   buttonActive: {
     elevation: 6,
@@ -272,12 +247,12 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     color: "red",
   },
-  darkButton: {
-    backgroundColor: "#756685",
-    color: "#e0e4dc",
-  },
   lightButton: {
     backgroundColor: "#5f6f52",
   },
-  buttonText: {},
+  wordError: {
+    color: "#6c526f",
+    textAlign: "center",
+    fontSize: 11,
+  },
 });

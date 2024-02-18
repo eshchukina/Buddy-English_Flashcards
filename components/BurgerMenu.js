@@ -6,22 +6,17 @@ import {
   TouchableHighlight,
   Modal,
   Text,
-  Pressable,
   SafeAreaView,
-  Button,
-  TouchableOpacity,
+    TouchableOpacity,
 } from "react-native";
 
 import Close from "react-native-vector-icons/AntDesign";
 import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-expo";
 import Constants from "expo-constants";
-import SignUpScreen from "./SignUpScreen";
-import SignInScreen from "./SignInScreen";
 import SignInWithOAuth from "./SignInWithOAuth";
 
 import * as SecureStore from "expo-secure-store";
 
-import Home from "./Home";
 
 const tokenCache = {
   async getToken(key) {
@@ -61,13 +56,7 @@ const SignOut = () => {
 };
 
 const BurgerMenu = ({ closeModal, isMenuVisible, handleEmptySpacePress }) => {
-  const openLoginModal = () => {
-    closeModal("login");
-  };
 
-  const openSignInModal = () => {
-    closeModal("signIn");
-  };
 
   if (!isMenuVisible) {
     return null;

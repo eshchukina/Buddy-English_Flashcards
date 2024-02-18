@@ -8,8 +8,8 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import BurgerMenu from "./BurgerMenu";
-import ModalLogin from "./ModalLogin";
-import ModalSingIn from "./ModalSingIn";
+import ModalLogin from "./ModalWindow/ModalLogin";
+import ModalSingIn from "./ModalWindow/ModalSingIn";
 
 export default function LoginButton() {
   const [isPressed, setIsPressed] = useState(false);
